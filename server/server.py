@@ -17,6 +17,26 @@ def check(name):
 def display():
     return jsonify(boardGames)
 
+@server.route('/add_game', methods=['POST'])
+def add_game():
+    data = request.get_json()  # Get JSON data from the client
+    name = data.get('name')
+    playercount = data.get('playercount')
+    gametime = data.get('gametime')
+    age = data.get('age')
+    gamecount = data.get('gamecount')
+
+    # Add the game data to the boardGames dictionary
+    if name and playercount and gametime and age and gamecount:
+        boardGames[name] = {
+            "playercount": playercount,
+            "gametime": gametime,
+            "age": age,
+            "gamecount": gamecount
+        }
+        return jsonify({'message': f'{name} has been added.', 'boardGames': boardGames}), 201
+    else:
+        return jsonify({'error': 'Missing data'}), 400
 
 
 
