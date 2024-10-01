@@ -1,50 +1,43 @@
-# import customtkinter
+import requests
 
-# customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
-# customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
-
-# app = customtkinter.CTk()  # create CTk window like you do with the Tk window
-# app.geometry("400x240")
-# app.title("Board Game Borrow")
-
-# def button_function():
-    # print("button pressed")
-
-# Use CTkButton instead of tkinter Button
-# button = customtkinter.CTkButton(master=app, text="CTkButton", command=button_function)
-# button.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
-
-# app.mainloop()
-
-
+serverUrl = "http://127.0.0.1:5000/"
 
 boardGames = {}
 
+
 def addBoardGame():
     name = input("Enter the name of the board game: ")
-    if name in boardGames:
+
+    response = requests.get(f"http://127.0.0.1:5000/checkname/{name}")
+    print(f"response: {response.json()}")
+
+    if response.json()['message'] == 'Game already exists':
         print("Would you like to increase the number of copies of the game? (y/n)")
         choice = input()
         if choice == "y":
-            newgamecount = int(input("Enter the number of extra game copies you are adding: "))
-            boardGames[name]["gamecount"] = gamecount + newgamecount
+            newGameCount = int(input("Enter the number of extra game copies you are adding: "))
+            boardGames[name]["gamecount"] + newGameCount
         return
+
     playercount = input("Enter the number of players: ")
     gametime = input("Enter the time it takes to play the game: ")
     age = input("Enter the minimum age to play the game: ")
     gamecount = int(input("Enter the number of game copies: "))
-    boardGames[name] = {"playercount": playercount, "gametime": gametime, "age": age, "gamecount": gamecount}
+    #boardGames[name] = {"playercount": playercount, "gametime": gametime, "age": age, "gamecount": gamecount}
 
 def removeBoardGame():
     name = input("Enter the name of the board game: ")
     del boardGames[name]
 
 def displayBoardGames():
-    for game in boardGames:
-        print(game)
-        print("Player count: " + boardGames[game]["playercount"])
-        print("Game time: " + boardGames[game]["gametime"])
-        print("Age: " + boardGames[game]["age"])
+    response = requests.get("http://127.0.0.1:5000/display")
+    print(f"Games: {response.json()}")
+
+    # for game in boardGames:
+    #     print(game)
+    #     print("Player count: " + boardGames[game]["playercount"])
+    #     print("Game time: " + boardGames[game]["gametime"])
+    #     print("Age: " + boardGames[game]["age"])
 
 def requestGame():
     name = input("Enter the name of the board game: ")
