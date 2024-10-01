@@ -1,6 +1,6 @@
 import requests
 
-serverUrl = "http://127.0.0.1:5000/"
+serverUrl = "http://127.0.0.1:5000"
 
 boardGames = {}
 
@@ -8,7 +8,7 @@ boardGames = {}
 def addBoardGame():
     name = input("Enter the name of the board game: ")
 
-    response = requests.get(f"http://127.0.0.1:5000/checkname/{name}")
+    response = requests.get(f"{serverUrl}/checkname/{name}")
     print(f"response: {response.json()}")
 
     if response.json()['message'] == 'Game already exists':
@@ -30,7 +30,7 @@ def removeBoardGame():
     del boardGames[name]
 
 def displayBoardGames():
-    response = requests.get("http://127.0.0.1:5000/display")
+    response = requests.get(f"{serverUrl}/display")
     print(f"Games: {response.json()}")
 
     # for game in boardGames:
