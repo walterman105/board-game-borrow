@@ -15,3 +15,25 @@ button = customtkinter.CTkButton(master=app, text="CTkButton", command=button_fu
 button.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
 
 app.mainloop()
+
+myStudents = {}
+while 1:
+    print("1. Add")
+    print("2. Remove")
+    print("4. Display")
+    print("5. Exit")
+    option = input()
+
+    if option == "1":
+
+    # elif option == "2":
+
+    # elif option == "3":
+
+    # elif option == "4":
+
+    # elif option == "5":
+        exit()
+
+    else:
+        print("Enter a valid option")
