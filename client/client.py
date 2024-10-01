@@ -1,6 +1,6 @@
 import requests
 
-serverUrl = "http://127.0.0.1:5000"
+serverUrl = "http://10.129.42.22:5000"
 
 boardGames = {}
 
@@ -23,10 +23,21 @@ def addBoardGame():
     gametime = input("Enter the time it takes to play the game: ")
     age = input("Enter the minimum age to play the game: ")
     gamecount = int(input("Enter the number of game copies: "))
-    #boardGames[name] = {"playercount": playercount, "gametime": gametime, "age": age, "gamecount": gamecount}
+    boardGames[name] = {"playercount": playercount, "gametime": gametime, "age": age, "gamecount": gamecount}
+    
+    response = requests.post(f"{serverUrl}/addgame, json={boardGames[name]}")
+    if response.status_code == 201:
+        print("Game added successfully")
+    else:
+        print("Failed to add game")
 
 def removeBoardGame():
+
     name = input("Enter the name of the board game: ")
+    response = requests.get(f"{serverUrl}/delete/{name}")
+    print(f"response: {response.json()}")
+    
+    
     del boardGames[name]
 
 def displayBoardGames():
