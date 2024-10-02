@@ -1,8 +1,11 @@
 import requests
 
-serverUrl = "http://10.129.42.22:5000"
+serverUrl = "http://127.0.0.1:5000"
 
-boardGames = {}
+
+boardGames = {"Catan": {"playercount": "4", "gametime": "60 minutes", "age": "10", "gamecount": 5},
+              "Monopoly": {"playercount": "4", "gametime": "90 minutes", "age": "8", "gamecount": 3},
+              "Risk": {"playercount": "6", "gametime": "120 minutes", "age": "10", "gamecount": 2}}
 
 
 def addBoardGame():
@@ -25,7 +28,7 @@ def addBoardGame():
     gamecount = int(input("Enter the number of game copies: "))
     boardGames[name] = {"playercount": playercount, "gametime": gametime, "age": age, "gamecount": gamecount}
     
-    response = requests.post(f"{serverUrl}/addgame, json={boardGames[name]}")
+    response = requests.post(f"{serverUrl}/addgame, json={boardGames}")
     if response.status_code == 201:
         print("Game added successfully")
     else:
