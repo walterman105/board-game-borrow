@@ -1,59 +1,43 @@
-
 import customtkinter
 
-class LoginFrame(customtkinter.CTkFrame):
-    def __init__(self, master):
-        super().__init__(master)
-
-        button = customtkinter.CTkButton(self, text="Username", command=button_callback)
-        button.grid(row=0, column=0, padx=20, pady=20)
-
-        button = customtkinter.CTkButton(self, text="Password", command=button_callback)
-        button.grid(row=1, column=0, padx=20, pady=20)
-
-class FunctionFrame(customtkinter.CTkFrame):
-    def __init__(self, master):
-        super().__init__(master)
-
-        button = customtkinter.CTkButton(self, text="Add", command=button_callback)
-        button.grid(row=0, column=0, padx=20, pady=20)
-
-        button = customtkinter.CTkButton(self, text="Remove", command=button_callback)
-        button.grid(row=1, column=0, padx=20, pady=20)
-
-        button = customtkinter.CTkButton(self, text="Display", command=button_callback)
-        button.grid(row=2, column=0, padx=20, pady=20)
-
-        button = customtkinter.CTkButton(self, text="Request", command=button_callback)
-        button.grid(row=3, column=0, padx=20, pady=20)
-
-class UserFunctions(customtkinter.CTk):
+class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-
-        self.title("Board Game Borrowing")
-        self.geometry("400x600")
-        self.grid_columnconfigure((1, 2), weight=1)
-        self.grid_rowconfigure((1, 2), weight=1)
-
-        self.current_frame = None
-        self.switch_frame(LoginFrame)
+        self.title("Board Game Borrow")
+        self.geometry(f"{1100}x{580}")
         
-        button = customtkinter.CTkButton(self, text="Switch to Function Frame", command=lambda: self.switch_frame(FunctionFrame))
-        button.grid(row=2, column=1, padx=20, pady=20, sticky="sw")
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure((2, 3), weight=0)
+        self.grid_rowconfigure((0, 1, 2), weight=1)
 
-        button = customtkinter.CTkButton(self, text="Exit", command=self.quit)
-        button.grid(row=2, column=2, padx=20, pady=20, sticky="es")
+        self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
+        self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
+        self.sidebar_frame.grid_rowconfigure(4, weight=1)
 
-    def switch_frame(self, frame_class):
-        new_frame = frame_class(self)
-        if self.current_frame is not None:
-            self.current_frame.destroy()
-        self.current_frame = new_frame
-        self.current_frame.grid(row=1, column=1, padx=10, pady=(10, 0), columnspan=2)
+        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Board Game\nBorrow", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-def button_callback():
-    print("button pressed")
+        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event)
+        self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
 
-app = UserFunctions()
-app.mainloop()
+        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Hello", command=self.sidebar_button_event)
+        self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
+
+        self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event)
+        self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
+
+        self.test = customtkinter.CTkButton(self, command=self.hide_sidebar)
+        self.test.grid(row=0, column=1, sticky="nsew")
+
+    def sidebar_button_event(self):
+        print("sidebar_button click")
+
+
+    def hide_sidebar(self):
+        self.sidebar_frame.grid_remove()
+
+    
+
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
