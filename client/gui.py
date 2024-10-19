@@ -2,8 +2,6 @@ import tkinter
 import tkinter.messagebox
 import customtkinter
 
-login = False
-
 class TopFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs, height=30, corner_radius=3)
@@ -12,10 +10,10 @@ class TopFrame(customtkinter.CTkFrame):
         self.topbar_button_1 = customtkinter.CTkButton(self, text="Create Account", width=15, height=10)                                    #Top Button 1 (Create Account)
         self.topbar_button_1.grid(row=0, column=3, sticky="e", pady=5)
 
-        self.topbar_button_2 = customtkinter.CTkButton(self, text="Sign In", width=15, height=10, command=self.sign_in)   #Top Button 2 (Sign In)
+        self.topbar_button_2 = customtkinter.CTkButton(self, text="Sign In", width=15, height=10, command=self.sign_in)                     #Top Button 2 (Sign In)
         self.topbar_button_2.grid(row=0, column=4, sticky="e", padx=20, pady=5)
 
-        self.topbar_button_3 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10) #Top Button 3 (Sign Out)
+        self.topbar_button_3 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10)                                          #Top Button 3 (Sign Out)
         self.topbar_button_3.grid(row=0, column=4, sticky="e", padx=20, pady=5)
         self.sign_out_remove()
 
@@ -34,14 +32,14 @@ class TopFrame(customtkinter.CTkFrame):
     def sign_in(self):
         self.sign_in_remove()
         self.sign_out_show()
-        SidebarFrame.login
         
-    def __str__(self):
-        return "TopFrame"
+    # def __str__(self):
+    #     return "TopFrame"
 
 class SidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master, width=140, corner_radius=0)
+        self.grid_rowconfigure(4, weight=1)
 
         self.logo_label = customtkinter.CTkLabel(self, text="Board Game\nBorrow", font=customtkinter.CTkFont(size=20, weight="bold"))       #Title
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
@@ -55,7 +53,6 @@ class SidebarFrame(customtkinter.CTkFrame):
 
         self.sidebar_button_1 = customtkinter.CTkButton(self, text="Login", command=self.login)
         self.sidebar_button_1.grid(row=2, column=0, padx=10, pady=10)
-
 
     def login_remove(self):
         self.loginframe.grid_remove()
@@ -77,33 +74,14 @@ class SidebarFrame(customtkinter.CTkFrame):
             self.login_show()
             self.functions_remove()
 
-
-    # def switch_frame(self, frame_class):
-    #     print(self)
-    #     new_frame = frame_class(self)
-    #     if self.current_frame is not None:
-    #         self.current_frame.grid_remove()
-    #     self.current_frame = new_frame
-    #     self.current_frame.grid(row=1, column=0, columnspan=2)
-    #     print(self.current_frame)
-        
-    # def set_login():
-    #     global login 
-    #     login = True
-    #     print(login)
-    #     if login == True:
-    #         SidebarFrame.switch_frame(SidebarFrame, FunctionsSidebarFrame)
-    #     else:
-    #         SidebarFrame.switch_frame(SidebarFrame, LoginSidebarFrame)
-
-    def __str__(self):
-        return "SidebarFrame"
+    # def __str__(self):
+    #     return "SidebarFrame"
 
 
 class FunctionsSidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master, width=120, corner_radius=8)
-        
+        self.grid_rowconfigure(4, weight=1)
 
         self.sidebar_button_1 = customtkinter.CTkButton(self, text="Veiw Game List", command=self.viewGames)                                #Side Button 1 (View Game List)
         self.sidebar_button_1.grid(row=1, column=0, padx=10, pady=10)
@@ -126,8 +104,8 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
     def addGame(self):
         print("Add Game")
 
-    def __str__(self):
-        return "FunctionsSidebarFrame"
+    # def __str__(self):
+    #     return "FunctionsSidebarFrame"
 
 class LoginSidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -142,8 +120,8 @@ class LoginSidebarFrame(customtkinter.CTkFrame):
     def createAccount(self):
         print("Create Account")
 
-    def __str__(self):
-        return "LoginSidebarFrame"
+    # def __str__(self):
+    #     return "LoginSidebarFrame"
 
 class ScrollFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
@@ -155,8 +133,8 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
         self.label.grid(row=0, column=0, padx=20)
         # Add Game List here
 
-    def __str__(self):
-        return "ScrollFrame"
+    # def __str__(self):
+    #     return "ScrollFrame"
 
 class LoginFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -165,8 +143,8 @@ class LoginFrame(customtkinter.CTkFrame):
         label = customtkinter.CTkLabel(self, text="Login Frame")
         label.grid(row=0, column=0, padx=20, pady=20)
 
-    def __str__(self):
-        return "LoginFrame"
+    # def __str__(self):
+    #     return "LoginFrame"
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -187,6 +165,7 @@ class App(customtkinter.CTk):
 
         self.checkbox = customtkinter.CTkCheckBox(self, text="Sidebar", command=self.sidebar)                                               #Call Checkbox
         self.checkbox.grid(row=2, column=1, padx=20, pady=20, sticky="ws")
+        self.checkbox.select()
 
         self.textbox = customtkinter.CTkTextbox(self, width=100)                                                                            #Call Textbox
         self.textbox.grid(row=0, column=2, padx=20, pady=(40,65), sticky="nsew", rowspan=3, columnspan=2)
