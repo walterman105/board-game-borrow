@@ -2,6 +2,32 @@ import tkinter
 import tkinter.messagebox
 import customtkinter
 
+signin = False
+
+class SignIn(customtkinter.CTkToplevel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.geometry("400x300")
+
+        self.label = customtkinter.CTkLabel(self, text="Sign In", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.label.pack(padx=20, pady=20)
+
+        self.username_entry = customtkinter.CTkEntry(self, placeholder_text="Username")
+        self.username_entry.pack(padx=20, pady=20)
+
+        self.password_entry = customtkinter.CTkEntry(self, placeholder_text="Password")
+        self.password_entry.pack(padx=20, pady=20)
+
+        self.sign_in_button = customtkinter.CTkButton(self, text="Sign In", command=self.sign_in)
+        self.sign_in_button.pack(padx=20, pady=20)
+
+    def sign_in(self):
+        if self.username_entry.get() == "admin" and self.password_entry.get() == "admin":
+            tkinter.messagebox.showinfo("Sign In", "Sign In Successful")
+            self.destroy()
+            signin = True
+            return signin
+
 class TopFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs, height=30, corner_radius=3)
@@ -30,9 +56,11 @@ class TopFrame(customtkinter.CTkFrame):
         self.topbar_button_2.grid()
 
     def sign_in(self):
-        self.sign_in_remove()
-        self.sign_out_show()
-        
+        SignIn(self)
+        if signin == True:
+            self.sign_in_remove()
+            self.sign_out_show()
+
     # def __str__(self):
     #     return "TopFrame"
 
@@ -92,9 +120,6 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
         self.sidebar_button_3 = customtkinter.CTkButton(self, text="Add Game", command=self.addGame)                                        #Side Button 3 (Add Game)
         self.sidebar_button_3.grid(row=3, column=0, padx=10, pady=10)
 
-        self.sidebar_button_3 = customtkinter.CTkButton(self, text="Add Game", command=self.addGame)                                        #Side Button 3 (Add Game)
-        self.sidebar_button_3.grid(row=4, column=0, padx=10, pady=10)
-
     def viewGames(self):
         print("View Games")
 
@@ -114,11 +139,11 @@ class LoginSidebarFrame(customtkinter.CTkFrame):
         text = customtkinter.CTkLabel(self, text="Please Login", font=customtkinter.CTkFont(size=15, weight="bold"))                        #Title
         text.grid(row=0, column=0, padx=10, pady=10)
 
-    def login(self):
-        print("Login")
+    # def login(self):
+    #     print("Login")
 
-    def createAccount(self):
-        print("Create Account")
+    # def createAccount(self):
+    #     print("Create Account")
 
     # def __str__(self):
     #     return "LoginSidebarFrame"
@@ -127,7 +152,8 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self._parent_frame.grid(row=0, column=0, columnspan=2, rowspan=3, padx=(200,0), pady=(50,70), sticky="nsew")
+
+        self._parent_frame.grid(row=0, column=0, columnspan=2, rowspan=3, padx=(0), pady=(50,70), sticky="nsew")
 
         self.label = customtkinter.CTkLabel(self)
         self.label.grid(row=0, column=0, padx=20)
@@ -160,8 +186,14 @@ class App(customtkinter.CTk):
         self.sidebar_frame = SidebarFrame(self)                                                                                             #Call Sidebar Frame
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
-        self.top_frame = TopFrame(self)                                                                                                     #Call Top Frame
-        self.top_frame.grid(row=0, column=1, columnspan=3, sticky="new")
+        # self.top_frame = TopFrame(self)                                                                                                     #Call Top Frame
+        # self.top_frame.grid(row=0, column=1, columnspan=3, sticky="new")
+
+        self.top_button = customtkinter.CTkButton(self, text="Create Account")                               #Top Button
+        self.top_button.grid(row=0, column=3, padx=20, pady=20, sticky="ne")
+
+        self.top_button = customtkinter.CTkButton(self, text="Sign In", command=self.login)                               #Top Button
+        self.top_button.grid(row=0, column=2, padx=20, pady=20, sticky="ne")
 
         self.checkbox = customtkinter.CTkCheckBox(self, text="Sidebar", command=self.sidebar)                                               #Call Checkbox
         self.checkbox.grid(row=2, column=1, padx=20, pady=20, sticky="ws")
@@ -181,6 +213,9 @@ class App(customtkinter.CTk):
 
         button = customtkinter.CTkButton(self, text="Switch to Login Frame", command=lambda: self.switch_frame(LoginFrame))
         button.grid(row=2, column=1, padx=180, pady=20, sticky="es")
+
+        button = customtkinter.CTkButton(self, text="Sidebar Login", command=self.login)
+        button.grid(row=2, column=1, padx=320, pady=20, sticky="es")
 
         button = customtkinter.CTkButton(self, text="Remove Frame", command=lambda: self.remove_frame())
         button.grid(row=2, column=2, padx=20, pady=20, sticky="es")
@@ -212,6 +247,19 @@ class App(customtkinter.CTk):
 
     def show_sidebar(self):
         self.sidebar_frame.grid()
+
+    def login(self):
+        self.toplevel_window = None  # create a toplevel window attribute
+        while signin == False:
+            if self.toplevel_window is None:
+                self.toplevel_window = SignIn(self)  # create window if its None or destroyed
+            else:
+                self.toplevel_window.focus()  # if window exists focus it
+            if signin == True:
+                self.sidebar_frame.login_remove()
+                self.sidebar_frame.functions_show()
+                break
+        # SidebarFrame.login(self.sidebar_frame)
 
     def __str__(self):
         return "App"
