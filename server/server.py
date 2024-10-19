@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
 from database import Database
+from auth import Authentication
 
 class Server:
     def __init__(self):
         self.server = Flask("BoardGameServer")
         self.db = Database()
+        self.auth = Authentication(self.server)
 
         self.setup()
 
@@ -24,7 +26,11 @@ class Server:
         @self.server.route("/delete/<name>", methods=["DELETE"])
         def delete(name):
             return self.delete_game(name)
-            
+        
+        # Authentication routes
+        @self.server.route("/login", methods=["POST"])
+        def login():
+            return self.auth.login(request.json)
             
     def display_games(self):
         return jsonify(self.db.boardGames)
@@ -46,7 +52,7 @@ class Server:
             return jsonify({"message": f"{name} not found"}), 404
     
     def run(self):
-        self.server.run()
+        self.server.run(debug=True)
     
 
 if __name__ == "__main__":
