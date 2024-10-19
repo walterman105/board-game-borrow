@@ -2,16 +2,11 @@ import requests
 
 serverUrl = "http://127.0.0.1:5000"
 
-
-boardGames = {"Catan": {"playercount": "4", "gametime": "60 minutes", "age": "10", "gamecount": 5},
-              "Monopoly": {"playercount": "4", "gametime": "90 minutes", "age": "8", "gamecount": 3},
-              "Risk": {"playercount": "6", "gametime": "120 minutes", "age": "10", "gamecount": 2}}
-
-
 def addBoardGame():
     name = input("Enter the name of the board game: ")
 
-    response = requests.get(f"{serverUrl}/checkname/{name}")
+    # Check if game exists on the server
+    response = requests.get(f"{serverUrl}/check/{name}")
     print(f"response: {response.json()}")
 
     if response.json()['message'] == 'Game already exists':
@@ -19,54 +14,54 @@ def addBoardGame():
         choice = input()
         if choice == "y":
             newGameCount = int(input("Enter the number of extra game copies you are adding: "))
-            boardGames[name]["gamecount"] + newGameCount
+            #boardGames[name]["gamecount"] += newGameCount
         return
 
+    # Collect game details
     playercount = input("Enter the number of players: ")
     gametime = input("Enter the time it takes to play the game: ")
     age = input("Enter the minimum age to play the game: ")
     gamecount = int(input("Enter the number of game copies: "))
-    boardGames[name] = {"playercount": playercount, "gametime": gametime, "age": age, "gamecount": gamecount}
-    
-    response = requests.post(f"{serverUrl}/addgame, json={boardGames}")
+    new_game = {name: {"playercount": playercount, "gametime": gametime, "age": age, "gamecount": gamecount}}
+
+    # Send the game data to the server
+    response = requests.post(f"{serverUrl}/add", json=new_game)
     if response.status_code == 201:
         print("Game added successfully")
     else:
         print("Failed to add game")
 
 def removeBoardGame():
-
     name = input("Enter the name of the board game: ")
-    response = requests.get(f"{serverUrl}/delete/{name}")
+    response = requests.delete(f"{serverUrl}/delete/{name}")
     print(f"response: {response.json()}")
     
-    
-    del boardGames[name]
+    if response.status_code == 200:
+        print(f"Game '{name}' deleted successfully.")
+    else:
+        print(f"Game '{name}' could not be deleted.")
+
+
 
 def displayBoardGames():
-    response = requests.get(f"{serverUrl}/display")
+    response = requests.get(f"{serverUrl}/boardgames")
     print(f"Games: {response.json()}")
-
-    # for game in boardGames:
-    #     print(game)
-    #     print("Player count: " + boardGames[game]["playercount"])
-    #     print("Game time: " + boardGames[game]["gametime"])
-    #     print("Age: " + boardGames[game]["age"])
 
 def requestGame():
     name = input("Enter the name of the board game: ")
     if name in boardGames:
-        print("There are " + str(boardGames[name]["gamecount"]) + " copies of the game available")
+        print(f"There are {boardGames[name]['gamecount']} copies of the game available")
         request = input("Would you like to request the game? (y/n)")
         if request == "y":
-            boardGames[name]["gamecount"] = boardGames[name]["gamecount"] - 1
+            boardGames[name]["gamecount"] -= 1
             print("Game has been requested")
         else:
             print("Game has not been requested")
     else:
         print("Game is not available")
 
-while 1:
+# Main loop
+while True:
     print("1. Add")
     print("2. Remove")
     print("3. Display")
@@ -84,6 +79,5 @@ while 1:
         requestGame()
     elif option == "0":
         exit()
-
     else:
         print("Enter a valid option")
