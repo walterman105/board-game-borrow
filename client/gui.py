@@ -67,11 +67,11 @@ import customtkinter
 
 class SidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
-        super().__init__(master, width=140, corner_radius=0)
+        super().__init__(master, corner_radius=0)
         self.grid_rowconfigure(4, weight=1)
 
         self.logo_label = customtkinter.CTkLabel(self, text="Board Game\nBorrow", font=customtkinter.CTkFont(size=20, weight="bold"))       #Title
-        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        self.logo_label.grid(row=0, column=0, padx=30, pady=(20, 10))
 
         self.functionsframe = FunctionsSidebarFrame(self)                                                                                 #Call Functions Frame
         self.functionsframe.grid(row=1, column=0, padx=10, pady=10)
@@ -154,9 +154,9 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
         super().__init__(master, **kwargs)
 
 
-        self._parent_frame.grid(row=0, column=2, columnspan=2, rowspan=3, padx=(0), pady=(50,70), sticky="nsew")
+        self._parent_frame.grid(row=0, column=0, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
 
-        self.label = customtkinter.CTkLabel(self)
+        self.label = customtkinter.CTkLabel(self, text="Game List", font=customtkinter.CTkFont(size=18, weight="bold"))
         self.label.grid(row=0, column=0, padx=20)
         # Add Game List here
 
@@ -201,7 +201,7 @@ class App(customtkinter.CTk):
         self.checkbox.select()
 
         self.textbox = customtkinter.CTkTextbox(self, width=100)                                                                            #Call Textbox
-        self.textbox.grid(row=0, column=2, padx=20, pady=(40,65), sticky="nsew", rowspan=3, columnspan=2)
+        self.textbox.grid(row=0, column=2, padx=20, pady=(40,70), sticky="nsew", rowspan=3, columnspan=2)
         self.textbox.insert("end", "Welcome to Board Game Borrow\n\n")
 
         self.exit = customtkinter.CTkButton(self, text="Exit", command=self.quit)                                                           #Exit Button
@@ -223,7 +223,7 @@ class App(customtkinter.CTk):
         if self.current_frame is not None:
             self.current_frame.grid_remove()
         self.current_frame = new_frame
-        self.current_frame.grid(row=0, column=0, columnspan=2)
+        self.current_frame.grid(row=0, column=1)
         print(self.current_frame)
 
     def remove_frame(self):
