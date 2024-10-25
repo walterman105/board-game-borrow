@@ -149,20 +149,45 @@ class LoginSidebarFrame(customtkinter.CTkFrame):
     #     return "LoginSidebarFrame"
 
 
-class ScrollFrame(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
+# class ScrollFrame(customtkinter.CTkScrollableFrame):
+#     def __init__(self, master, **kwargs):
+#         super().__init__(master, **kwargs)
 
+#         self.rowconfigure(1, weight=1)
+#         self.columnconfigure(0, weight=1)
 
-        self._parent_frame.grid(row=0, column=0, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
+#         self._parent_frame.grid(row=0, column=0, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
 
-        self.label = customtkinter.CTkLabel(self, text="Game List", font=customtkinter.CTkFont(size=18, weight="bold"))
-        self.label.grid(row=0, column=0, padx=20)
-        # Add Game List here
+#         self.label = customtkinter.CTkLabel(self, text="Game List", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
+#         self.label.grid(row=0, column=0, padx=(20,0), pady=20, sticky="nw")
+#         # Add Game List here
+
+#         self.textbox = customtkinter.CTkTextbox(self)                                                                            #Call Textbox
+#         self.textbox.grid(row=1, column=0, padx=20, pady=(5,70), sticky="nsew", rowspan=3)
+#         self.textbox.insert("end", "Welcome to Board Game Borrow\n\n")
+
+#         self.label2 = customtkinter.CTkLabel(self, text="Game Request", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
+#         self.label2.grid(row=4, column=0, padx=(20,0), pady=20, sticky="nw")
+
+#     # def __str__(self):
+#     #     return "ScrollFrame"
+
+class GameList(customtkinter.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+
+        self.label = customtkinter.CTkLabel(self, text="Game List", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
+
+        gameList = customtkinter.CTkTextbox(self)
+        gameList.grid(row=1, column=0, padx=20, pady=(5,20), rowspan=3, columnspan=2, sticky="nsew")
+        gameList.insert("end", "Game List\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n hello")
 
     # def __str__(self):
-    #     return "ScrollFrame"
-
+    #     return "GameList"
 class GeneralFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
@@ -209,10 +234,10 @@ class App(customtkinter.CTk):
 
         self.current_frame = None
 
-        button1 = customtkinter.CTkButton(self, text="Switch to Scroll Frame", command=lambda: self.switch_frame(ScrollFrame))
+        button1 = customtkinter.CTkButton(self, text="Switch to Scroll Frame", command=lambda: self.switch_frame(GameList))
         button1.grid(row=2, column=1, padx=20, pady=20, sticky="es")
 
-        button2 = customtkinter.CTkButton(self, text="Switch to Login Frame", command=lambda: self.switch_frame(GeneralFrame))
+        button2 = customtkinter.CTkButton(self, text="Switch to General Frame", command=lambda: self.switch_frame(GeneralFrame))
         button2.grid(row=2, column=1, padx=180, pady=20, sticky="es")
 
         button3 = customtkinter.CTkButton(self, text="Remove Frame", command=lambda: self.remove_frame())
@@ -223,7 +248,7 @@ class App(customtkinter.CTk):
         if self.current_frame is not None:
             self.current_frame.grid_remove()
         self.current_frame = new_frame
-        self.current_frame.grid(row=0, column=1)
+        self.current_frame.grid(row=0, column=1, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
         print(self.current_frame)
 
     def remove_frame(self):
