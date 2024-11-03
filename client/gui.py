@@ -123,8 +123,15 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
     def viewGames(self):
         print("View Games")
 
+        # updated part
+        app.switch_frame(app.gamelist)
+        # In the case of classes defined in different namespaces, you can use this:
+        # self.master.master.switch_frame(self.master.master.scroll_frame.master.master)
+        # end of updated part
+
     def requestGame(self):
         print("Request Game")
+        app.switch_frame(app.login_frame)
 
     def addGame(self):
         print("Add Game")
@@ -176,6 +183,10 @@ class GameList(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
+        # updated part
+        self.grid(row=0, column=1, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
+        # end of updated part
+
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
@@ -192,6 +203,10 @@ class GeneralFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
         
+        # updated part
+        self.grid(row=0, column=1, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
+        # end of updated part
+
         label = customtkinter.CTkLabel(self, text="Login Frame")
         label.grid(row=0, column=0, padx=20, pady=20)
 
@@ -234,27 +249,51 @@ class App(customtkinter.CTk):
 
         self.current_frame = None
 
-        button1 = customtkinter.CTkButton(self, text="Switch to Scroll Frame", command=lambda: self.switch_frame(GameList))
+        # updated part
+        # create objects:
+        # <__main__.GeneralFrame object .!generalframe>
+        # <customtkinter.windows.widgets.ctk_frame.CTkFrame object .!ctkframe>
+        
+        self.login_frame = GeneralFrame(self)
+        self.login_frame.grid_remove()
+
+        self.gamelist = GameList(self)
+        # print(self.scroll_frame) # .!ctkframe.!canvas.!scrollframe
+        self.gamelist.grid_remove() # hide parent .!ctkframe
+        # print(self.scroll_frame.master.master) # .!ctkframe
+
+        button1 = customtkinter.CTkButton(self, text="Switch to Scroll Frame", command=lambda: self.switch_frame(self.gamelist))
         button1.grid(row=2, column=1, padx=20, pady=20, sticky="es")
 
-        button2 = customtkinter.CTkButton(self, text="Switch to General Frame", command=lambda: self.switch_frame(GeneralFrame))
+        button2 = customtkinter.CTkButton(self, text="Switch to Login Frame", command=lambda: self.switch_frame(self.login_frame))
         button2.grid(row=2, column=1, padx=180, pady=20, sticky="es")
+        # end of updated part
 
         button3 = customtkinter.CTkButton(self, text="Remove Frame", command=lambda: self.remove_frame())
         button3.grid(row=2, column=2, padx=20, pady=20, sticky="es")
 
-    def switch_frame(self, frame_class):
-        new_frame = frame_class(self)
+    # updated part (Stackoverflow help)
+    def switch_frame(self, frame):
+        """
+        :param frame: instance of customtkinter.CTkFrame
+        """
+        if self.current_frame is frame:
+            return
         if self.current_frame is not None:
             self.current_frame.grid_remove()
-        self.current_frame = new_frame
-        self.current_frame.grid(row=0, column=1, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
+        # display an existing object
+        self.current_frame = frame
+        self.current_frame.grid() # grid options are remembered
         print(self.current_frame)
 
     def remove_frame(self):
+        if self.current_frame is None:
+            return
         self.current_frame.grid_remove()
         self.current_frame = None
         print(self.current_frame)
+        print(self.winfo_children())
+    # end of updated part
 
     def sidebar_button_event(self):
         print("sidebar_button click")
