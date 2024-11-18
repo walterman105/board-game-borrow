@@ -1,7 +1,10 @@
-import tkinter
+import tkinter as tk
 import tkinter.messagebox
 import customtkinter
 import client
+import pymsgbox
+
+
 
 
 class SidebarFrame(customtkinter.CTkFrame):
@@ -122,6 +125,14 @@ class GameList(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
+        client.check_server_connection()
+
+        if not client.server_connected:
+            pymsgbox.alert("Can't connect to server!", "Error")
+
+
+
+
         # updated part
         self.grid(row=0, column=1, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
         # end of updated part
@@ -129,15 +140,16 @@ class GameList(customtkinter.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
-        self.label = customtkinter.CTkLabel(self, text="Game List", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.label = customtkinter.CTkLabel(self, text="Game List", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
         self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
 
         gameList = customtkinter.CTkTextbox(self)
         gameList.grid(row=1, column=0, padx=20, pady=(5,20), rowspan=3, columnspan=2, sticky="nsew")
         gameList.insert("end", "Game List\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n hello")
 
-        games = client.getGameList()
-        gameList.insert("end", games)
+        if client.server_connected:
+            games = client.get_game_list()
+            gameList.insert("end", games)
 
     # def __str__(self):
     #     return "GameList"

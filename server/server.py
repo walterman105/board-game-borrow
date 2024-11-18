@@ -1,16 +1,21 @@
 from flask import Flask, request, jsonify
 from database import Database
-from auth import Authentication
+#from auth import Authentication
 
 class Server:
     def __init__(self):
         self.server = Flask("BoardGameServer")
         self.db = Database()
-        self.auth = Authentication(self.server)
+        #self.auth = Authentication(self.server)
 
         self.setup()
 
     def setup(self):
+
+        @self.server.route("/")
+        def index():
+            return "OK"
+
         @self.server.route("/boardgames", methods=["GET"])
         def boardgames():
             return self.display_games()
