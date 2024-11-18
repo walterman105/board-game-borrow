@@ -1,5 +1,6 @@
 import tkinter
 import tkinter.messagebox
+import json
 import customtkinter
 import client
 
@@ -60,7 +61,7 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
         self.sidebar_button_3.grid(row=3, column=0, padx=10, pady=10)
 
     def viewGames(self):
-        print("View Games")
+
 
         # updated part
         app.switch_frame(app.gamelist)
@@ -91,32 +92,6 @@ class LoginSidebarFrame(customtkinter.CTkFrame):
     # def createAccount(self):
     #     print("Create Account")
 
-    # def __str__(self):
-    #     return "LoginSidebarFrame"
-
-
-# class ScrollFrame(customtkinter.CTkScrollableFrame):
-#     def __init__(self, master, **kwargs):
-#         super().__init__(master, **kwargs)
-
-#         self.rowconfigure(1, weight=1)
-#         self.columnconfigure(0, weight=1)
-
-#         self._parent_frame.grid(row=0, column=0, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
-
-#         self.label = customtkinter.CTkLabel(self, text="Game List", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
-#         self.label.grid(row=0, column=0, padx=(20,0), pady=20, sticky="nw")
-#         # Add Game List here
-
-#         self.textbox = customtkinter.CTkTextbox(self)                                                                            #Call Textbox
-#         self.textbox.grid(row=1, column=0, padx=20, pady=(5,70), sticky="nsew", rowspan=3)
-#         self.textbox.insert("end", "Welcome to Board Game Borrow\n\n")
-
-#         self.label2 = customtkinter.CTkLabel(self, text="Game Request", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
-#         self.label2.grid(row=4, column=0, padx=(20,0), pady=20, sticky="nw")
-
-#     # def __str__(self):
-#     #     return "ScrollFrame"
 
 class GameList(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -153,11 +128,28 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
         label = customtkinter.CTkLabel(self, text="Scroll Frame")
         label.grid(row=0, column=0, padx=20, pady=20)
 
-        for i in range(1, 11):
-            for keys in client.getGameList():
-                x = keys
+        gamenamelist = []
+
+        jsonstring = client.getGameList()
+        gamedict = json.loads(jsonstring)
+
+        for keys in gamedict:
+            x = keys
+            print(x)
+            gamenamelist.append(x)
+            
+
+        for i in range(len(gamenamelist)):
+
+            x = gamenamelist[i]
+
             button = customtkinter.CTkButton(self, text=f"{x}")
-            button.grid(row=i+1, column=0, padx=20, pady=5)
+            button.grid(row=i+1, column=0, padx=20, pady=20)
+
+           
+
+
+            
 
 
 

@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify
 from database import Database
-from auth import Authentication
+# from auth import Authentication
 
 class Server:
     def __init__(self):
         self.server = Flask("BoardGameServer")
         self.db = Database()
-        self.auth = Authentication(self.server)
+        # self.auth = Authentication(self.server)
 
         self.setup()
 
