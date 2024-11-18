@@ -132,15 +132,36 @@ class GameList(customtkinter.CTkFrame):
         self.label = customtkinter.CTkLabel(self, text="Game List", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
         self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
 
-        gameList = customtkinter.CTkTextbox(self)
-        gameList.grid(row=1, column=0, padx=20, pady=(5,20), rowspan=3, columnspan=2, sticky="nsew")
-        gameList.insert("end", "Game List\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n hello")
 
-        games = client.getGameList()
-        gameList.insert("end", games)
+        gameList = ScrollFrame(self)
+        # gameList = customtkinter.CTkTextbox(self)
+        gameList.grid(row=1, column=0, padx=20, pady=(5,20), rowspan=3, columnspan=2, sticky="nsew")
+        # gameList.insert("end", "Game List\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n hello")
+
+        # games = client.getGameList()
+        # gameList.insert("end", games)
 
     # def __str__(self):
     #     return "GameList"
+
+class ScrollFrame(customtkinter.CTkScrollableFrame):
+    def __init__(self, master):
+        super().__init__(master)
+
+        self.grid(row=0, column=1, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
+
+        label = customtkinter.CTkLabel(self, text="Scroll Frame")
+        label.grid(row=0, column=0, padx=20, pady=20)
+
+        for i in range(1, 11):
+            for keys in client.getGameList():
+                x = keys
+            button = customtkinter.CTkButton(self, text=f"{x}")
+            button.grid(row=i+1, column=0, padx=20, pady=5)
+
+
+
+                
 class GeneralFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
