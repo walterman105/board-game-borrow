@@ -129,6 +129,8 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
         label.grid(row=0, column=0, padx=20, pady=20)
 
         gamenamelist = []
+        
+        buttonlist = []
 
         jsonstring = client.getGameList()
         gamedict = json.loads(jsonstring)
@@ -143,10 +145,17 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
 
             x = gamenamelist[i]
 
-            button = customtkinter.CTkButton(self, text=f"{x}")
-            button.grid(row=i+1, column=0, padx=20, pady=20)
+            
 
-           
+            button = customtkinter.CTkButton(self, text=f"{x}", command=lambda x=x: showinfo(x))
+            button.grid(row=i+1, column=0, padx=20, pady=20)
+            buttonlist.append(button)
+            print(buttonlist)
+
+        def showinfo(x):
+            print(gamedict[x])
+            
+        
 
 
             

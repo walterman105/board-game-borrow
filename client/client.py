@@ -87,5 +87,5 @@ serverUrl = "http://127.0.0.1:5000"
 def getGameList(): 
     response = requests.get(f"{serverUrl}/boardgames")
     print("GETTING DATA FR")
-    return response.json
+    return response.text
 
