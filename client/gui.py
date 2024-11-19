@@ -43,8 +43,6 @@ class SidebarFrame(customtkinter.CTkFrame):
             self.login_show()
             self.functions_remove()
 
-    # def __str__(self):
-    #     return "SidebarFrame"
 
 class FunctionsSidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -61,23 +59,16 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
         self.sidebar_button_3.grid(row=3, column=0, padx=10, pady=10)
 
     def viewGames(self):
-
-
-        # updated part
         app.switch_frame(app.gamelist)
-        # In the case of classes defined in different namespaces, you can use this:
-        # self.master.master.switch_frame(self.master.master.scroll_frame.master.master)
-        # end of updated part
+                                                                                                                                            # In the case of classes defined in different namespaces, you can use this:
+                                                                                                                                            # self.master.master.switch_frame(self.master.master.scroll_frame.master.master)
+    
+    def addGame(self):
+        print("Add Game")
 
     def requestGame(self):
         print("Request Game")
         app.switch_frame(app.login_frame)
-
-    def addGame(self):
-        print("Add Game")
-
-    # def __str__(self):
-    #     return "FunctionsSidebarFrame"
 
 class LoginSidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -86,52 +77,27 @@ class LoginSidebarFrame(customtkinter.CTkFrame):
         text = customtkinter.CTkLabel(self, text="Please Login", font=customtkinter.CTkFont(size=15, weight="bold"))                        #Title
         text.grid(row=0, column=0, padx=10, pady=10)
 
-    # def login(self):
-    #     print("Login")
-
-    # def createAccount(self):
-    #     print("Create Account")
-
-
 class GameList(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
-        # updated part
         self.grid(row=0, column=1, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
-        # end of updated part
-
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
         self.label = customtkinter.CTkLabel(self, text="Game List", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
         self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
 
-
         gameList = ScrollFrame(self)
-        # gameList = customtkinter.CTkTextbox(self)
         gameList.grid(row=1, column=0, padx=20, pady=(5,20), rowspan=3, columnspan=2, sticky="nsew")
-        # gameList.insert("end", "Game List\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n hello")
-
-        # games = client.getGameList()
-        # gameList.insert("end", games)
-
-    # def __str__(self):
-    #     return "GameList"
 
 class ScrollFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master):
         super().__init__(master)
 
-        self.grid(row=0, column=1, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
-
-        label = customtkinter.CTkLabel(self, text="Scroll Frame")
-        label.grid(row=0, column=0, padx=20, pady=20)
+        self.columnconfigure(0, weight=1)
 
         gamenamelist = []
-        
-        buttonlist = []
-
         jsonstring = client.getGameList()
         gamedict = json.loads(jsonstring)
 
@@ -140,42 +106,26 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
             print(x)
             gamenamelist.append(x)
             
-
         for i in range(len(gamenamelist)):
 
             x = gamenamelist[i]
 
-            
-
-            button = customtkinter.CTkButton(self, text=f"{x}", command=lambda x=x: showinfo(x))
-            button.grid(row=i+1, column=0, padx=20, pady=20)
-            buttonlist.append(button)
-            print(buttonlist)
+            button = customtkinter.CTkButton(self, width=200, text=f"{x}", command=lambda x=x: showinfo(x))
+            button.grid(row=i+1, column=0, padx=5, pady=5)
 
         def showinfo(x):
             print(gamedict[x])
-            
-        
+            app.textbox.delete("1.0", "end")
+            app.textbox.insert("end", f"{x}\nAge: {gamedict[x]["age"]}\nPlayer Count: {gamedict[x]["playercount"]}\nGame Time: {gamedict[x]["gametime"]}\nNumber of available games: {gamedict[x]["gamecount"]}\n")
 
-
-            
-
-
-
-                
 class GeneralFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
         
-        # updated part
         self.grid(row=0, column=1, rowspan=3, padx=(20,0), pady=(40,70), sticky="nsew")
-        # end of updated part
 
         label = customtkinter.CTkLabel(self, text="Login Frame")
         label.grid(row=0, column=0, padx=20, pady=20)
-
-    # def __str__(self):
-    #     return "LoginFrame"
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -190,9 +140,6 @@ class App(customtkinter.CTk):
 
         self.sidebar_frame = SidebarFrame(self)                                                                                             #Call Sidebar Frame
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
-
-        # self.top_frame = TopFrame(self)                                                                                                     #Call Top Frame
-        # self.top_frame.grid(row=0, column=1, columnspan=3, sticky="new")
 
         self.top_button1 = customtkinter.CTkButton(self, text="Create Account", width=15, height=10, command=self.create_account)                                                              #Top Button
         self.top_button1.grid(row=0, column=3, padx=(20, 80), pady=10, sticky="ne")
@@ -213,7 +160,7 @@ class App(customtkinter.CTk):
 
         self.current_frame = None
 
-        # updated part
+
         # create objects:
         # <__main__.GeneralFrame object .!generalframe>
         # <customtkinter.windows.widgets.ctk_frame.CTkFrame object .!ctkframe>
@@ -231,23 +178,19 @@ class App(customtkinter.CTk):
 
         button2 = customtkinter.CTkButton(self, text="Switch to Login Frame", command=lambda: self.switch_frame(self.login_frame))
         button2.grid(row=2, column=1, padx=180, pady=20, sticky="es")
-        # end of updated part
 
         button3 = customtkinter.CTkButton(self, text="Remove Frame", command=lambda: self.remove_frame())
         button3.grid(row=2, column=2, padx=20, pady=20, sticky="es")
 
-    # updated part (Stackoverflow help)
     def switch_frame(self, frame):
-        """
-        :param frame: instance of customtkinter.CTkFrame
-        """
+        # param frame: instance of customtkinter.CTkFrame
         if self.current_frame is frame:
             return
         if self.current_frame is not None:
             self.current_frame.grid_remove()
         # display an existing object
         self.current_frame = frame
-        self.current_frame.grid() # grid options are remembered
+        self.current_frame.grid()
         print(self.current_frame)
 
     def remove_frame(self):
@@ -257,7 +200,6 @@ class App(customtkinter.CTk):
         self.current_frame = None
         print(self.current_frame)
         print(self.winfo_children())
-    # end of updated part
 
     def sidebar_button_event(self):
         print("sidebar_button click")
@@ -291,9 +233,6 @@ class App(customtkinter.CTk):
             self.top_button2 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10)
             self.top_button2.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
             self.sidebar_frame.login()
-
-    def __str__(self):
-        return "App"
 
 if __name__ == "__main__":
     app = App()
