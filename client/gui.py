@@ -66,8 +66,7 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
     def addGame(self):
         print("Add Game")
         app.open_toplevel()
-        app.toplevel_window.focus()
-        client.add_game()   
+        app.toplevel_window.focus() 
 
     def requestGame(self):
         print("Request Game")
@@ -76,8 +75,6 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
 class AddGame(customtkinter.CTkToplevel):
     def __init__(self, master):
         super().__init__(master)
-
-        gamedict = {}
 
         self.title("Add Game")
         self.geometry(f"{400}x{400}")
@@ -93,22 +90,22 @@ class AddGame(customtkinter.CTkToplevel):
 
         self.name_entry = customtkinter.CTkEntry(self, width=200)
         self.name_entry.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
-        name = self.name_entry.get()
+        
 
         self.age_label = customtkinter.CTkLabel(self, text="Age", font=customtkinter.CTkFont(size=15, weight="bold"))
         self.age_label.grid(row=3, column=0, padx=20, pady=5, sticky="nw")
 
         self.age_entry = customtkinter.CTkEntry(self, width=200)
         self.age_entry.grid(row=4, column=0, padx=20, pady=5, sticky="nw")
-        age = self.age_entry.get()
-
-        self.minplayercount_label = customtkinter.CTkLabel(self, text="Min Player Count", font=customtkinter.CTkFont(size=15, weight="bold"))
-        self.minplayercount_label.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
         
 
-        self.minplayercount_entry = customtkinter.CTkEntry(self, width=200)
-        self.minplayercount_entry.grid(row=6, column=0, padx=20, pady=5, sticky="nw")
-        minplayercount = self.minplayercount_entry.get()
+        # self.minplayercount_label = customtkinter.CTkLabel(self, text="Min Player Count", font=customtkinter.CTkFont(size=15, weight="bold"))
+        # self.minplayercount_label.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
+        
+
+        # self.minplayercount_entry = customtkinter.CTkEntry(self, width=200)
+        # self.minplayercount_entry.grid(row=6, column=0, padx=20, pady=5, sticky="nw")
+        # minplayercount = self.minplayercount_entry.get()
         
 
         self.maxplayercount_label = customtkinter.CTkLabel(self, text="Max Player Count", font=customtkinter.CTkFont(size=15, weight="bold"))
@@ -116,28 +113,34 @@ class AddGame(customtkinter.CTkToplevel):
 
         self.maxplayercount_entry = customtkinter.CTkEntry(self, width=200)
         self.maxplayercount_entry.grid(row=8, column=0, padx=20, pady=5, sticky="nw")
-        maxplayercount = self.maxplayercount_entry.get()
+        
 
         self.gametime_label = customtkinter.CTkLabel(self, text="Game Time", font=customtkinter.CTkFont(size=15, weight="bold"))
         self.gametime_label.grid(row=9, column=0, padx=20, pady=5, sticky="nw")
 
         self.gametime_entry = customtkinter.CTkEntry(self, width=200)
         self.gametime_entry.grid(row=10, column=0, padx=20, pady=5, sticky="nw")
-        gametime = self.gametime_entry.get()
 
-        self.add_button = customtkinter.CTkButton(self, text="Add Game", command=self.game())
+
+        self.add_button = customtkinter.CTkButton(self, text="Add Game", command=lambda: self.game())
         self.add_button.grid(row=11, column=0, padx=20, pady=5, sticky="nw")
 
     def game(self): 
+        name = self.name_entry.get()
+        age = self.age_entry.get()
+        maxplayercount = self.maxplayercount_entry.get()
+        gametime = self.gametime_entry.get()
+        
         gamedict = {
         "name": name,
         "age": age,
-        "minplayercount": minplayercount,
         "maxplayercount": maxplayercount,
         "gametime": gametime
-    }
+        }
         print(gamedict)
         print("add game")
+        client.add_game(name, maxplayercount, gametime, age)  
+        print(name, age, maxplayercount, gametime)
         
 
 

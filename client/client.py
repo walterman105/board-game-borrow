@@ -13,7 +13,7 @@ def get_game_info(name):
     response = requests.get(f"{serverUrl}/info/{name}")
     return response.text
 
-def add_game(name, minplayer, maxplayer, gametime, age):
+def add_game(name, maxplayer, gametime, age):
     new_game = {name: {"playercount": maxplayer, "gametime": gametime, "age": age, "gamecount": 9999}}
 
     response = requests.post(f"{serverUrl}/add", json=new_game)
