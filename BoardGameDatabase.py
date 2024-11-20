@@ -4,7 +4,7 @@ from mysql.connector import errorcode
 # Database configuration
 config = {
     'user': 'root',      # Replace with your MySQL username
-    'password': 'Ilovemy48pets!',   # Replace with your MySQL password
+    'password': 'wugsob-Poxger-duvna8',   # Replace with your MySQL password
     'host': 'localhost',           # Adjust if needed (e.g., an IP address)
     'raise_on_warnings': True
 }
