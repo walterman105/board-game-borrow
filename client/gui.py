@@ -65,10 +65,80 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
     
     def addGame(self):
         print("Add Game")
+        app.open_toplevel()
+        app.toplevel_window.focus()
 
     def requestGame(self):
         print("Request Game")
         app.switch_frame(app.login_frame)
+
+class AddGame(customtkinter.CTkToplevel):
+    def __init__(self, master):
+        super().__init__(master)
+
+        gamedict = {}
+
+        self.title("Add Game")
+        self.geometry(f"{400}x{400}")
+
+        # self.grid_columnconfigure(0, weight=1)
+        # self.grid_rowconfigure(0, weight=1)
+
+        self.label = customtkinter.CTkLabel(self, text="Add Game", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
+
+        self.name_label = customtkinter.CTkLabel(self, text="Game Name", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.name_label.grid(row=1, column=0, padx=20, pady=5, sticky="nw")
+
+        self.name_entry = customtkinter.CTkEntry(self, width=200)
+        self.name_entry.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
+        name = self.name_entry.get()
+
+        self.age_label = customtkinter.CTkLabel(self, text="Age", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.age_label.grid(row=3, column=0, padx=20, pady=5, sticky="nw")
+
+        self.age_entry = customtkinter.CTkEntry(self, width=200)
+        self.age_entry.grid(row=4, column=0, padx=20, pady=5, sticky="nw")
+        age = self.age_entry.get()
+
+        self.minplayercount_label = customtkinter.CTkLabel(self, text="Min Player Count", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.minplayercount_label.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
+        
+
+        self.minplayercount_entry = customtkinter.CTkEntry(self, width=200)
+        self.minplayercount_entry.grid(row=6, column=0, padx=20, pady=5, sticky="nw")
+        minplayercount = self.minplayercount_entry.get()
+        
+
+        self.maxplayercount_label = customtkinter.CTkLabel(self, text="Max Player Count", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.maxplayercount_label.grid(row=7, column=0, padx=20, pady=5, sticky="nw")
+
+        self.maxplayercount_entry = customtkinter.CTkEntry(self, width=200)
+        self.maxplayercount_entry.grid(row=8, column=0, padx=20, pady=5, sticky="nw")
+        maxplayercount = self.maxplayercount_entry.get()
+
+        self.gametime_label = customtkinter.CTkLabel(self, text="Game Time", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.gametime_label.grid(row=9, column=0, padx=20, pady=5, sticky="nw")
+
+        self.gametime_entry = customtkinter.CTkEntry(self, width=200)
+        self.gametime_entry.grid(row=10, column=0, padx=20, pady=5, sticky="nw")
+        gametime = self.gametime_entry.get()
+
+        self.add_button = customtkinter.CTkButton(self, text="Add Game", command=self.game())
+        self.add_button.grid(row=11, column=0, padx=20, pady=5, sticky="nw")
+
+    def game(self): 
+        gamedict = {
+        "name": name,
+        "age": age,
+        "minplayercount": minplayercount,
+        "maxplayercount": maxplayercount,
+        "gametime": gametime
+    }
+        print(gamedict)
+        print("add game")
+        
+
 
 class LoginSidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -140,6 +210,8 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=0)
         self.grid_rowconfigure((0, 1, 2), weight=1)
+
+        self.toplevel_window = None
 
         self.sidebar_frame = SidebarFrame(self)                                                                                             #Call Sidebar Frame
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
@@ -218,6 +290,12 @@ class App(customtkinter.CTk):
 
     def show_sidebar(self):
         self.sidebar_frame.grid()
+
+    def open_toplevel(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = AddGame(self)  # create window if its None or destroyed
+        else:
+            self.toplevel_window.focus()  # if window exists focus it
 
     def create_account(self):
         username = customtkinter.CTkInputDialog(text="Enter usernsme", title="Login")
