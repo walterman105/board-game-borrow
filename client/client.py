@@ -13,8 +13,8 @@ def get_game_info(name):
     response = requests.get(f"{serverUrl}/info/{name}")
     return response.text
 
-def add_game():
-    new_game = {"Name": {"playercount": 12, "gametime": 12, "age": 44, "gamecount": 44}}
+def add_game(name, minplayer, maxplayer, gametime, age):
+    new_game = {name: {"playercount": maxplayer, "gametime": gametime, "age": age, "gamecount": 9999}}
 
     response = requests.post(f"{serverUrl}/add", json=new_game)
     if response.status_code == 201:
