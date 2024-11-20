@@ -67,6 +67,7 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
         print("Add Game")
         app.open_toplevel()
         app.toplevel_window.focus()
+        client.add_game()   
 
     def requestGame(self):
         print("Request Game")
@@ -167,28 +168,32 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
 
         self.columnconfigure(0, weight=1)
 
-        gamenamelist = []
-        jsonstring = client.get_game_list()
-        gamenamelist = json.loads(jsonstring)
-            
-        for i in range(len(gamenamelist)):
-            x = gamenamelist[i]
+        if client.conneted_to_server == False:
+            label = customtkinter.CTkLabel(self, text="Could not connect to server", font=customtkinter.CTkFont(size=15, weight="bold"))
+            label.grid(row=0, column=0, padx=20, pady=20)
+        else:
+            gamenamelist = []
+            jsonstring = client.get_game_list()
+            gamenamelist = json.loads(jsonstring)
+                
+            for i in range(len(gamenamelist)):
+                x = gamenamelist[i]
 
-            button = customtkinter.CTkButton(self, width=200, text=f"{x}", command=lambda x=x: showinfo(x))
-            button.grid(row=i+1, column=0, padx=5, pady=5)
+                button = customtkinter.CTkButton(self, width=200, text=f"{x}", command=lambda x=x: showinfo(x))
+                button.grid(row=i+1, column=0, padx=5, pady=5)
 
-        def showinfo(x):
-            app.textbox.delete("1.0", "end")
-            game_info = client.get_game_info(x)
-            game_info_dict = json.loads(game_info)  # Assuming the response is a JSON string
-            formatted_info = (
-                f"Game: {x}\n"
-                f"Age: {game_info_dict['age']}\n"
-                f"Player Count: {game_info_dict['playercount']}\n"
-                f"Game Time: {game_info_dict['gametime']}\n"
-                f"Number of available games: {game_info_dict['gamecount']}\n"
-            )
-            app.textbox.insert("end", formatted_info)
+            def showinfo(x):
+                app.textbox.delete("1.0", "end")
+                game_info = client.get_game_info(x)
+                game_info_dict = json.loads(game_info)  # Assuming the response is a JSON string
+                formatted_info = (
+                    f"Game: {x}\n"
+                    f"Age: {game_info_dict['age']}\n"
+                    f"Player Count: {game_info_dict['playercount']}\n"
+                    f"Game Time: {game_info_dict['gametime']}\n"
+                    f"Number of available games: {game_info_dict['gamecount']}\n"
+                )
+                app.textbox.insert("end", formatted_info)
             
 
 class GeneralFrame(customtkinter.CTkFrame):
@@ -235,6 +240,7 @@ class App(customtkinter.CTk):
 
         self.current_frame = None
 
+        client.check_connection()
 
         # create objects:
         # <__main__.GeneralFrame object .!generalframe>
@@ -314,6 +320,7 @@ class App(customtkinter.CTk):
             self.top_button2 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10)
             self.top_button2.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
             self.sidebar_frame.login()
+
 
 if __name__ == "__main__":
     app = App()
