@@ -7,6 +7,9 @@ class Database:
     def add_game(self, data):
         self.boardGames.update(data)
 
+    def get_game_names(self):
+        return list(self.boardGames.keys())
+
     def delete_game(self, name):
         # Check if the game exists before deleting
         if name in self.boardGames:

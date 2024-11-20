@@ -14,11 +14,15 @@ class Server:
         @self.server.route("/boardgames", methods=["GET"])
         def boardgames():
             return self.display_games()
-
+        
         @self.server.route("/add", methods=["POST"])
         def add():
             return self.add_game(request.json)
         
+        @self.server.route("/info/<name>", methods=["GET"])
+        def info(name):
+            return self.game_info(name)
+
         @self.server.route("/check/<name>", methods=["GET"])
         def check(name):
             return self.check_game(name)
@@ -33,8 +37,15 @@ class Server:
             return self.auth.login(request.json)
             
     def display_games(self):
-        return jsonify(self.db.boardGames)
+        #return jsonify(self.db.boardGames)
+        return jsonify(self.db.get_game_names())
     
+    def game_info(self, name):
+        if name in self.db.boardGames:
+            return jsonify(self.db.boardGames[name])
+        else:
+            return jsonify({"message": "Game not found"}), 404
+
     def add_game(self, data):
         self.db.add_game(data)
         return jsonify({"message": "Game added successfully"}), 201

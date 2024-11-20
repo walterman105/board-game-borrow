@@ -98,25 +98,28 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
         self.columnconfigure(0, weight=1)
 
         gamenamelist = []
-        jsonstring = client.getGameList()
-        gamedict = json.loads(jsonstring)
-
-        for keys in gamedict:
-            x = keys
-            print(x)
-            gamenamelist.append(x)
+        jsonstring = client.get_game_list()
+        gamenamelist = json.loads(jsonstring)
             
         for i in range(len(gamenamelist)):
-
             x = gamenamelist[i]
 
             button = customtkinter.CTkButton(self, width=200, text=f"{x}", command=lambda x=x: showinfo(x))
             button.grid(row=i+1, column=0, padx=5, pady=5)
 
         def showinfo(x):
-            print(gamedict[x])
             app.textbox.delete("1.0", "end")
-            app.textbox.insert("end", f"{x}\nAge: {gamedict[x]["age"]}\nPlayer Count: {gamedict[x]["playercount"]}\nGame Time: {gamedict[x]["gametime"]}\nNumber of available games: {gamedict[x]["gamecount"]}\n")
+            game_info = client.get_game_info(x)
+            game_info_dict = json.loads(game_info)  # Assuming the response is a JSON string
+            formatted_info = (
+                f"Game: {x}\n"
+                f"Age: {game_info_dict['age']}\n"
+                f"Player Count: {game_info_dict['playercount']}\n"
+                f"Game Time: {game_info_dict['gametime']}\n"
+                f"Number of available games: {game_info_dict['gamecount']}\n"
+            )
+            app.textbox.insert("end", formatted_info)
+            
 
 class GeneralFrame(customtkinter.CTkFrame):
     def __init__(self, master):
