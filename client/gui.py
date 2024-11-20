@@ -64,7 +64,7 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
                                                                                                                                             # self.master.master.switch_frame(self.master.master.scroll_frame.master.master)
     
     def addGame(self):
-        print("Add Game")
+        client.add_game()   
 
     def requestGame(self):
         print("Request Game")
@@ -96,8 +96,6 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
         super().__init__(master)
 
         self.columnconfigure(0, weight=1)
-
-        print(client.conneted_to_server)
 
         if client.conneted_to_server == False:
             label = customtkinter.CTkLabel(self, text="Could not connect to server", font=customtkinter.CTkFont(size=15, weight="bold"))

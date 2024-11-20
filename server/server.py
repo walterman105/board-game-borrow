@@ -11,6 +11,10 @@ class Server:
         self.setup()
 
     def setup(self):
+        @self.server.route("/", methods=["GET"])
+        def root():
+            return jsonify({"status": "ok"})
+
         @self.server.route("/boardgames", methods=["GET"])
         def boardgames():
             return self.display_games()
