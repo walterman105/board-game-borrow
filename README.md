@@ -1,3 +1,5 @@
 # Board Game Borrow - CS Final Project 
 
-```pip3 install customtkinter```
+```pip install customtkinter```
+```pip install Flask-JWT-Extended Flask-Bcrypt```
+
