@@ -4,7 +4,6 @@ import json
 import customtkinter
 import client
 
-
 class SidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master, corner_radius=0)
