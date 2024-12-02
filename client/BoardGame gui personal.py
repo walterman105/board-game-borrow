@@ -167,6 +167,29 @@ class GameList(customtkinter.CTkFrame):
         gameList = ScrollFrame(self)
         gameList.grid(row=1, column=0, padx=20, pady=(5,20), rowspan=3, columnspan=2, sticky="nsew")
 
+        self.button = customtkinter.CTkButton(self, text="Refresh", command=lambda: self.refresh())
+        self.button.grid(row=4, column=0, padx=20, pady=(5,20), sticky="nsw")
+
+        self.current_frame = gameList
+
+    def refresh(self):
+        self.current_frame.grid_remove()
+        self.switch_frame(ScrollFrame)
+
+
+    def switch_frame(self, frame_class):
+        new_frame = frame_class(self)
+        if self.current_frame is not None:
+            self.current_frame.grid_remove()
+        self.current_frame = new_frame
+        self.current_frame.grid(row=1, column=0, padx=20, pady=(5,20), rowspan=3, columnspan=2, sticky="nsew")
+        print(self.current_frame)
+
+    def remove_frame(self):
+        self.current_frame.grid_remove()
+        self.current_frame = None
+        print(self.current_frame)
+
 class ScrollFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master):
         super().__init__(master)
@@ -203,6 +226,79 @@ class GeneralFrame(customtkinter.CTkFrame):
         label = customtkinter.CTkLabel(self, text="Login Frame")
         label.grid(row=0, column=0, padx=20, pady=20)
 
+class LoginTopLevel(customtkinter.CTkToplevel):
+    def __init__(self, master):
+        super().__init__(master)
+
+        self.title("Login")
+        self.geometry(f"{400}x{400}")
+
+        self.label = customtkinter.CTkLabel(self, text="Login", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
+
+        self.username_label = customtkinter.CTkLabel(self, text="Username", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.username_label.grid(row=1, column=0, padx=20, pady=5, sticky="nw")
+
+        self.username_entry = customtkinter.CTkEntry(self, width=200)
+        self.username_entry.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
+
+        self.password_label = customtkinter.CTkLabel(self, text="Password", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.password_label.grid(row=3, column=0, padx=20, pady=5, sticky="nw")
+
+        self.password_entry = customtkinter.CTkEntry(self, width=200)
+        self.password_entry.grid(row=4, column=0, padx=20, pady=5, sticky="nw")
+
+        self.login_button = customtkinter.CTkButton(self, text="Login", command=self.login)
+        self.login_button.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
+
+    def login(self):
+        username = self.username_entry.get()
+        password = self.password_entry.get()
+        print(username, password)
+        app.toplevel_window.after(500, self.destroy)
+
+
+
+class CreateAccountTopLevel(customtkinter.CTkToplevel):
+    def __init__(self, master):
+        super().__init__(master)
+
+        self.title("Create Account")
+        self.geometry(f"{400}x{400}")
+
+        self.label = customtkinter.CTkLabel(self, text="Create Account", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
+
+        self.username_label = customtkinter.CTkLabel(self, text="Username", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.username_label.grid(row=1, column=0, padx=20, pady=5, sticky="nw")
+
+        self.username_entry = customtkinter.CTkEntry(self, width=200)
+        self.username_entry.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
+
+        self.email_label = customtkinter.CTkLabel(self, text="Email", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.email_label.grid(row=3, column=0, padx=20, pady=5, sticky="nw")
+
+        self.email_entry = customtkinter.CTkEntry(self, width=200)
+        self.email_entry.grid(row=4, column=0, padx=20, pady=5, sticky="nw")
+
+        self.password_label = customtkinter.CTkLabel(self, text="Password", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.password_label.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
+
+        self.password_entry = customtkinter.CTkEntry(self, width=200)
+        self.password_entry.grid(row=6, column=0, padx=20, pady=5, sticky="nw")
+
+        self.login_button = customtkinter.CTkButton(self, text="Create", command=self.login)
+        self.login_button.grid(row=7, column=0, padx=20, pady=5, sticky="nw")
+
+    def login(self):
+        username = self.username_entry.get()
+        email = self.email_entry.get()
+        password = self.password_entry.get()
+        print(username, email, password)
+        app.toplevel_window.after(500, self.destroy)
+
+
+
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -219,10 +315,10 @@ class App(customtkinter.CTk):
         self.sidebar_frame = SidebarFrame(self)                                                                                             #Call Sidebar Frame
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
-        self.top_button1 = customtkinter.CTkButton(self, text="Create Account", width=15, height=10, command=self.create_account)                                                              #Top Button
+        self.top_button1 = customtkinter.CTkButton(self, text="Create Account", width=15, height=10, command=self.open_toplevel_create_account)                                                              #Top Button
         self.top_button1.grid(row=0, column=3, padx=(20, 80), pady=10, sticky="ne")
 
-        self.top_button2 = customtkinter.CTkButton(self, text="Sign In", width=15, height=10, command=self.login)                                                 #Top Button
+        self.top_button2 = customtkinter.CTkButton(self, text="Sign In", width=15, height=10, command=self.open_toplevel_login)                                                 #Top Button
         self.top_button2.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
 
         self.checkbox = customtkinter.CTkCheckBox(self, text="Sidebar", command=self.sidebar)                                               #Call Checkbox
@@ -299,6 +395,18 @@ class App(customtkinter.CTk):
             self.toplevel_window = AddGame(self)  # create window if its None or destroyed
         else:
             self.toplevel_window.focus()  # if window exists focus it
+    
+    def open_toplevel_login(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = LoginTopLevel(self)  # create window if its None or destroyed
+        else:
+            self.toplevel_window.focus()  # if window exists focus it
+
+    def open_toplevel_create_account(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = CreateAccountTopLevel(self)
+        else:
+            self.toplevel_window.focus()
 
     def create_account(self):
         username = customtkinter.CTkInputDialog(text="Enter usernsme", title="Login")

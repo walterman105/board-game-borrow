@@ -4,6 +4,9 @@ import mysql.connector
 class Database:
     def __init__(self):
 
+        self.games_dict = {}
+
+    def show_games(self):
         #connects to database
         conn = mysql.connector.connect(
             host = "localhost",

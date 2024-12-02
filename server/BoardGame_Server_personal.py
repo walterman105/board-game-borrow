@@ -20,9 +20,16 @@ class Server:
         def boardgames():
             return self.display_games()
 
-        @self.server.route("/add", methods=["GET", "POST"])
+        @self.server.route("/add", methods=["POST"])
         def add():
-            return self.add_game(request.json)
+            try:
+                new_game = request.get_json()
+                if not new_game:
+                    return jsonify({"message": "No input data provided"}), 400
+                return self.add_game(new_game)
+
+            except Exception as e:
+                return jsonify({"message": str(e)}), 500
         
         @self.server.route("/check/<name>", methods=["GET"])
         def check(name):
@@ -38,6 +45,7 @@ class Server:
             return self.auth.login(request.json)
             
     def display_games(self):
+        self.db.show_games()
         return jsonify(self.db.games_dict)
     
     def game_info(self, name):
