@@ -81,13 +81,13 @@ class Server:
         def login():
             return self.auth.login(request.json)
         
-        @self.server.route("/email/request", methods=["POST"])
+        @self.server.route("/email_request", methods=["POST"])
         def email_request():
             try:
-                user = request.get_json()
-                if not user:
+                data = request.get_json()
+                if not data:
                     return jsonify({"message": "No input data provided"}), 400
-                return self.email_request(user)
+                return self.email_request(data)
             
             except Exception as e:
                 return jsonify({"message": str(e)}), 500
@@ -130,8 +130,8 @@ class Server:
         else:
             return jsonify({"message": f"{data} not found"}), 404
         
-    def email_request(self, user):
-        self.email.send_request(user)
+    def email_request(self, data):
+        self.email.send_request(data)
         return jsonify({"message": "Request sent"}), 201
     
     def run(self):
