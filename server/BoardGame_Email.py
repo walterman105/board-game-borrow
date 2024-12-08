@@ -49,7 +49,7 @@ class Email:
         sub = "BOARDGAMEBORROW Game request"       #Subject of the mail
         print(sub)
 
-        a = f"{user} has requested to borrow a game from you. Please login to the BOARDGAMEBORROW app to accept or reject the request."       #Body of the mail
+        a = f"{user} has requested to borrow {game_name} from you. \nPlease send a email response to {user} to accept or deny the request. \nIf you accept the request arrage a place and time to meet to give them the game. \n\nThank you \n BoardGameBorrow"       #Body of the mail
         print(a)
 
         for i in to:
@@ -65,6 +65,13 @@ class Email:
                 smtp.send_message(msg)
                 print("Mail sent successfully")
                 smtp.quit()
+
+    # def email_reminder(self, data):
+    #     to = 
+    #     sub = "BOARDGAMEBORROW Game request"       #Subject of the mail
+    #     a = f"{user} has requested to borrow {game_name} from you. \nPlease remember to log in to BoardGameBorrow to remove the game if you have accepted the request. \n\nThank you \n BoardGameBorrow"       #Body of the mail
+        
+
 
     def receive_email():
 

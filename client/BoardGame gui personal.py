@@ -417,11 +417,12 @@ class App(customtkinter.CTk):
 
         # button3 = customtkinter.CTkButton(self, text="Remove Frame", command=lambda: self.remove_frame())
         # button3.grid(row=2, column=2, padx=20, pady=20, sticky="es")
-
-        user = auth.load_user()
-        if user:
+        global email
+        email = auth.get_email()
+        if email:
             client.check_user(auth.get_email(), auth.get_password())
-            SidebarFrame.login()
+            self.sidebar_frame.login_remove()
+            self.sidebar_frame.functions_show()
 
         
 
