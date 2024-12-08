@@ -120,15 +120,13 @@ class Server:
     
     def check_game(self, name):
         if name in self.db.boardGames:
-            return jsonify({"message": "Game already exists"}), 200
+            return jsonify({"message": "Game already exists"}), 201
         else:
             return jsonify({"message": "Game does not exist"}), 404
         
     def delete_game(self, data):
         if self.db.deletegame(data):
-            return jsonify({"message": f"{data} deleted successfully"}), 200
-        else:
-            return jsonify({"message": f"{data} not found"}), 404
+            return jsonify({"message": f"{data} deleted successfully"}), 201
         
     def email_request(self, data):
         self.email.send_request(data)

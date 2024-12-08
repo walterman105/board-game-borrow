@@ -27,10 +27,11 @@ class Database:
         columns = [desc[0] for desc in cursor.description]
             
         # Convert rows to a list of dictionaries1
-        games_list = [dict(zip(columns, row)) for row in rows]
-            
+        self.games_list = [dict(zip(columns, row)) for row in rows]
+       
         # Convert list of dictionaries to a dictionary with game names as keys
-        self.games_dict = {game['name']: game for game in games_list}
+        self.games_dict = {game['name']: game for game in self.games_list}
+
 
 
     def addgame(self, data):
@@ -41,19 +42,38 @@ class Database:
             database = "my_database"
         )
         cursor = conn.cursor()
+
+        username = data[6]
+        boardgame_name = data[0]
+        name_check = "SELECT name FROM boardgames WHERE name = %s;"
+        cursor.execute(name_check, (boardgame_name,))
+        name_check_results = cursor.fetchall()
+        game_name = name_check_results[0][0]
+        print(game_name)
         
-        #Add data function:
-        #Add data to table/columns
-        insert_query = """
-            INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, owner)
-            VALUES (%s, %s, %s, %s, %s, %s, %s);
-        """
+        if game_name == boardgame_name:
+            new_query = """
+                INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, owner)
+                SELECT name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, %s
+                FROM boardgames WHERE name = %s;
+                """
+            cursor.execute(new_query, (username, boardgame_name))
+            conn.commit()
+            print("Added to database")
+        else:
 
-        cursor.execute(insert_query, data)
+            #Add data function:
+            #Add data to table/columns
+            insert_query = """
+                INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, owner)
+                VALUES (%s, %s, %s, %s, %s, %s, %s);
+            """
 
-        conn.commit()
-        cursor.close()
-        conn.close()
+            cursor.execute(insert_query, data)
+
+            conn.commit()
+            cursor.close()
+            conn.close()
 
     def adduser(self, data):
         conn = mysql.connector.connect(
@@ -134,3 +154,5 @@ class Database:
         values = (delete_choice, data[0])
         cursor.execute(delete_query_final, values)
         conn.commit()
+        cursor.close()
+        conn.close()

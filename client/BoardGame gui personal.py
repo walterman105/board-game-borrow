@@ -59,6 +59,9 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
         self.sidebar_button_3 = customtkinter.CTkButton(self, text="Add Game", command=self.addGame)                                        #Side Button 3 (Add Game)
         self.sidebar_button_3.grid(row=3, column=0, padx=10, pady=10)
 
+        self.sidebar_button_4 = customtkinter.CTkButton(self, text="Delete Game", command=self.deleteGame)                                  #Side Button 4 (Delete Game)
+        self.sidebar_button_4.grid(row=4, column=0, padx=10, pady=10)
+
     def viewGames(self):
         app.switch_frame(app.gamelist)
                                                                                                                                             # In the case of classes defined in different namespaces, you can use this:
@@ -73,6 +76,11 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
         print("Request Game")
         app.open_toplevel_reqest()
         app.toplevel_window.after(50, app.toplevel_window.lift) 
+
+    def deleteGame(self):
+        print("Delete Game")
+        app.open_toplevel_delete()
+        app.toplevel_window.after(50, app.toplevel_window.lift)
 
 class AddGame(customtkinter.CTkToplevel):
     def __init__(self, master):
@@ -288,7 +296,9 @@ class LoginTopLevel(customtkinter.CTkToplevel):
         
         app.sidebar_frame.login_remove()
         app.sidebar_frame.functions_show()
-        # app.master.login
+        app.sign_in_remove()
+        app.sign_out_show()
+
         app.toplevel_window.after(50, self.destroy)
 
 
@@ -423,6 +433,8 @@ class App(customtkinter.CTk):
             client.check_user(auth.get_email(), auth.get_password())
             self.sidebar_frame.login_remove()
             self.sidebar_frame.functions_show()
+            self.sign_in_remove()
+            self.sign_out_show()
 
         
 
@@ -498,6 +510,13 @@ class App(customtkinter.CTk):
     def open_toplevel_reqest(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
             self.toplevel_window = RequestGameTopLevel(self)
+            self.toplevel_window.after(50, app.toplevel_window.lift) 
+        else:
+            self.toplevel_window.focus()
+
+    def open_toplevel_delete(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = deleteGame(self)
             self.toplevel_window.after(50, app.toplevel_window.lift) 
         else:
             self.toplevel_window.focus()
