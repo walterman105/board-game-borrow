@@ -48,22 +48,44 @@ while running:
                             choice = input("Enter your choice: ")
 
                             if choice == "1":
-                                name = input("Enter the name of the game: ").upper()
-                                minPlayerCount = int(input("Enter the minimum player count: "))
-                                maxPlayerCount = int(input("Enter the maximum player count: "))
-                                time = int(input("Enter the amount of minutes the game usually takes: "))
-                                age = int(input("Enter the minimum recommended age to play the game: "))
-                                user = username
+                                boardgame_name = input("Enter the name of the game: ").upper()
+                                name_check = "SELECT name FROM boardgames WHERE name = %s;"
+                                cursor.execute(name_check, (boardgame_name,))
+                                name_check_results = cursor.fetchall()
+                                game_name = name_check_results[0][0]
+                                print(game_name)
+                                if game_name == boardgame_name:
+                                    print("Game is already in database. Add another copy?")
+                                    print("1. Yes")
+                                    print("2. No")
+                                    selection = input("Enter your decision: ")
+                                    if selection == "1":
+                                        new_query = """
+                                        INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, user)
+                                        SELECT name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, %s
+                                        FROM boardgames WHERE name = %s;
+                                        """
+                                        cursor.execute(new_query, (username, boardgame_name))
+                                        conn.commit()
+                                        print("Added to database")
+                                    elif selection == "2":
+                                        print("------------")
+                                else:
+                                    minPlayerCount = int(input("Enter the minimum player count: "))
+                                    maxPlayerCount = int(input("Enter the maximum player count: "))
+                                    time = int(input("Enter the amount of minutes the game usually takes: "))
+                                    age = int(input("Enter the minimum recommended age to play the game: "))
+                                    user = username
 
-                                data = (name, minPlayerCount, maxPlayerCount, time, age, 1, user)
-                                cursor.execute(boardgame_query, data)
-                                conn.commit()
-                                print("Game Added")
-                                print("--------------------------")
+                                    data = (boardgame_name, minPlayerCount, maxPlayerCount, time, age, 1, user)
+                                    cursor.execute(boardgame_query, data)
+                                    conn.commit()
+                                    print("Game Added")
+                                    print("--------------------------")
 
                             elif choice == "2":
-                                delete_query = "SELECT * FROM boardgames WHERE owner = %s;" #selects all rows where the value user in boardgames is placeholder
-                                value_to_find = email
+                                delete_query = "SELECT * FROM boardgames WHERE user = %s;" #selects all rows where the value user in boardgames is placeholder
+                                value_to_find = username
                                 cursor.execute(delete_query, (value_to_find,))
 
                                 delete_results = cursor.fetchall()
@@ -75,7 +97,7 @@ while running:
                                     decision = input("Enter your choice: ")
                                     if decision == "1":
                                         delete_choice = input("Type the name of the game you would like to delete: ").upper()
-                                        delete_query_final = "DELETE FROM boardgames WHERE name = %s AND owner = %s;"
+                                        delete_query_final = "DELETE FROM boardgames WHERE name = %s AND user = %s;"
                                         values = (delete_choice, username)
                                         cursor.execute(delete_query_final, values)
                                         conn.commit()
