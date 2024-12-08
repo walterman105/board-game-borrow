@@ -10,12 +10,13 @@ from email.message import EmailMessage      #for sending mail
 class Email:
     def __init__(self):
 
-        global email_id
-        global email_pass
         email_id='board.game.borrow.app@gmail.com'
         email_pass='tgxc reor gudt bhhr'
 
     def send_request(data):
+
+        email_id='board.game.borrow.app@gmail.com'
+        email_pass='tgxc reor gudt bhhr'
 
         user = data
         

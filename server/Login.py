@@ -62,8 +62,8 @@ while running:
                                 print("--------------------------")
 
                             elif choice == "2":
-                                delete_query = "SELECT * FROM boardgames WHERE user = %s;" #selects all rows where the value user in boardgames is placeholder
-                                value_to_find = username
+                                delete_query = "SELECT * FROM boardgames WHERE owner = %s;" #selects all rows where the value user in boardgames is placeholder
+                                value_to_find = email
                                 cursor.execute(delete_query, (value_to_find,))
 
                                 delete_results = cursor.fetchall()
@@ -75,7 +75,7 @@ while running:
                                     decision = input("Enter your choice: ")
                                     if decision == "1":
                                         delete_choice = input("Type the name of the game you would like to delete: ").upper()
-                                        delete_query_final = "DELETE FROM boardgames WHERE name = %s AND user = %s;"
+                                        delete_query_final = "DELETE FROM boardgames WHERE name = %s AND owner = %s;"
                                         values = (delete_choice, username)
                                         cursor.execute(delete_query_final, values)
                                         conn.commit()

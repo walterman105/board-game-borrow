@@ -67,8 +67,8 @@ class Database:
         #Add data to table/columns
 
         insert_query = """
-            INSERT INTO users (Username, Email, Password, UserID)
-            VALUES (%s, %s, %s, %s);
+            INSERT INTO users (email, password)
+            VALUES (%s, %s);
         """
 
         cursor.execute(insert_query, data)
@@ -77,7 +77,8 @@ class Database:
         cursor.close()
         conn.close()
 
-    def checkusers(self):
+    def login(self, data):
+        
         conn = mysql.connector.connect(
             host = "localhost",
             user = "root",
@@ -86,12 +87,50 @@ class Database:
         )
         cursor = conn.cursor()
 
-        Users = "SELECT Username FROM users"
+        username = data[0]
+        cursor.execute("SELECT email from users;") #selects all the rows from the username columns in the users table
+        user_result = cursor.fetchall() #gathers/fetches all the rows
+        if any(row[0] == username for row in user_result): #Checks if any rows first element in user result is equal to user input of username
+            for index, row in enumerate(user_result, start=1): #loops each row while tracking index number. enumerate function. Starts at 1 for mysql structure
+                if row[0] == username: #Checks if any rows first element in user result is equal to user input of username
+                    row_number = {index} #if username is found, sets 'row_number' to the index value of where username was found
+                    row_number = int(row_number.pop()) #changes the index from set to int
+                    print("Username Found")
+                    password = data[1] #password check
+                    # Query to fetch the specific row using LIMIT and OFFSET
+                    password_query = "SELECT password FROM users LIMIT 1 OFFSET %s;" #limit makes sure only 1 value is returned, offset
+                    # Calculate offset (row_number - 1 since OFFSET is zero-based)
+                    cursor.execute(password_query, (row_number - 1,)) #selects the password at the row_number
+                    check_password = cursor.fetchone() #gathers/fetches value and stores it in check_password variable
+                    check_password = ''.join(map(str, check_password)) #changes set to string
+                    if password == check_password: #if matches, login successful
+                        print("Login Successful!")
+                        #modify menu driven program:
+                        # Add data function:
+                        # Add data to table/columns
 
-        cursor.execute(Users)
-        rows = cursor.fetchall()
+        # conn.commit()
+        cursor.close()
+        conn.close()
 
-#         print(rows)
+    def deletegame(self, data):
 
-# d = Database()
-# d.checkusers()
+        conn = mysql.connector.connect(
+            host = "localhost",
+            user = "root",
+            password = "wugsob-Poxger-duvna8",
+            database = "my_database"
+        )
+        cursor = conn.cursor()
+
+        delete_query = "SELECT * FROM boardgames WHERE owner = %s;" #selects all rows where the value user in boardgames is placeholder
+        value_to_find = data[0]
+        cursor.execute(delete_query, (value_to_find,))
+
+        delete_results = cursor.fetchall()
+
+        delete_choice = data[1].upper()
+        delete_query_final = "DELETE FROM boardgames WHERE name = %s AND owner = %s;"
+        values = (delete_choice, data[0])
+        cursor.execute(delete_query_final, values)
+        conn.commit()

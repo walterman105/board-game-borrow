@@ -53,9 +53,28 @@ class Server:
         def check(name):
             return self.check_game(name)
         
-        @self.server.route("/delete/<name>", methods=["DELETE"])
-        def delete(name):
-            return self.delete_game(name)
+        @self.server.route("/checkuser", methods=["POST"])
+        def checkuser():
+            try:
+                data = request.get_json()
+                if not data:
+                    return jsonify({"message": "No input data provided"}), 400
+                return self.check_user(data)
+
+            except Exception as e:
+                return jsonify({"message": str(e)}), 500
+        
+
+        @self.server.route("/delete", methods=["POST"])
+        def delete():
+            try:
+                data = request.get_json()
+                if not data:
+                    return jsonify({"message": "No input data provided"}), 400
+                return self.delete_game(data)
+
+            except Exception as e:
+                return jsonify({"message": str(e)}), 500
         
         # Authentication routes
         @self.server.route("/login", methods=["POST"])
@@ -95,17 +114,21 @@ class Server:
         self.db.adduser(new_user)
         return jsonify({"message": "User added successfully"}), 201
     
+    def check_user(self, data):
+        self.db.login(data)
+        return jsonify({"message": "User added successfully"}), 201
+    
     def check_game(self, name):
         if name in self.db.boardGames:
             return jsonify({"message": "Game already exists"}), 200
         else:
             return jsonify({"message": "Game does not exist"}), 404
         
-    def delete_game(self, name):
-        if self.db.delete_game(name):
-            return jsonify({"message": f"{name} deleted successfully"}), 200
+    def delete_game(self, data):
+        if self.db.deletegame(data):
+            return jsonify({"message": f"{data} deleted successfully"}), 200
         else:
-            return jsonify({"message": f"{name} not found"}), 404
+            return jsonify({"message": f"{data} not found"}), 404
         
     def email_request(self, user):
         self.email.send_request(user)

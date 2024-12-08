@@ -126,7 +126,7 @@ class AddGame(customtkinter.CTkToplevel):
         self.add_button.grid(row=11, column=0, padx=20, pady=5, sticky="nw")
         
     def game(self): 
-        name = self.name_entry.get()
+        name = self.name_entry.get().upper()
         age = self.age_entry.get()
         minplayercount = self.minplayercount_entry.get()
         maxplayercount = self.maxplayercount_entry.get()
@@ -138,17 +138,38 @@ class AddGame(customtkinter.CTkToplevel):
         "minplayercount": minplayercount,
         "maxplayercount": maxplayercount,
         "gametime": gametime,
-        "owner": username
+        "owner": email
         }
         print(gamedict)
         print("add game button clicked")
-        client.add_game(name, minplayercount, maxplayercount, gametime, age, username)  
-        print(name, age, minplayercount, maxplayercount, gametime, username)
+        client.add_game(name, minplayercount, maxplayercount, gametime, age, email)  
+        print(name, age, minplayercount, maxplayercount, gametime, email)
         app.toplevel_window.after(500, self.destroy)
         
+class deleteGame(customtkinter.CTkToplevel):
+    def __init__(self, master):
+        super().__init__(master)
 
+        self.title("Delete Game")
+        self.geometry(f"{400}x400")
 
+        self.label = customtkinter.CTkLabel(self, text="Delete Game", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
 
+        self.game_label = customtkinter.CTkLabel(self, text="Game", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.game_label.grid(row=1, column=0, padx=20, pady=5, sticky="nw")
+
+        self.game_entry = customtkinter.CTkEntry(self, width=200)
+        self.game_entry.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
+
+        self.delete_button = customtkinter.CTkButton(self, text="Delete", command=self.delete)
+        self.delete_button.grid(row=3, column=0, padx=20, pady=5, sticky="nw")
+
+    def delete(self):
+        name = self.game_entry.get()
+        print(name)
+        client.deletegame(email, name)
+        app.toplevel_window.after(50, self.destroy)
 class LoginSidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master, width=120, corner_radius=8)
@@ -239,11 +260,11 @@ class LoginTopLevel(customtkinter.CTkToplevel):
         self.label = customtkinter.CTkLabel(self, text="Login", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
         self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
 
-        self.username_label = customtkinter.CTkLabel(self, text="Username", font=customtkinter.CTkFont(size=15, weight="bold"))
-        self.username_label.grid(row=1, column=0, padx=20, pady=5, sticky="nw")
+        self.email_label = customtkinter.CTkLabel(self, text="Email", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.email_label.grid(row=1, column=0, padx=20, pady=5, sticky="nw")
 
-        self.username_entry = customtkinter.CTkEntry(self, width=200)
-        self.username_entry.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
+        self.email_entry = customtkinter.CTkEntry(self, width=200)
+        self.email_entry.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
 
         self.password_label = customtkinter.CTkLabel(self, text="Password", font=customtkinter.CTkFont(size=15, weight="bold"))
         self.password_label.grid(row=3, column=0, padx=20, pady=5, sticky="nw")
@@ -255,13 +276,15 @@ class LoginTopLevel(customtkinter.CTkToplevel):
         self.login_button.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
 
     def login(self):
-        global username
-        username = self.username_entry.get()
+        global email
+        email = self.email_entry.get()
         password = self.password_entry.get()
-        print(username, password)
+        print(email, password)
+        client.check_user(email, password)
+        
         app.sidebar_frame.login_remove()
         app.sidebar_frame.functions_show()
-        app.master.login
+        # app.master.login
         app.toplevel_window.after(50, self.destroy)
 
 
@@ -275,12 +298,6 @@ class CreateAccountTopLevel(customtkinter.CTkToplevel):
 
         self.label = customtkinter.CTkLabel(self, text="Create Account", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
         self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
-
-        self.username_label = customtkinter.CTkLabel(self, text="Username", font=customtkinter.CTkFont(size=15, weight="bold"))
-        self.username_label.grid(row=1, column=0, padx=20, pady=5, sticky="nw")
-
-        self.username_entry = customtkinter.CTkEntry(self, width=200)
-        self.username_entry.grid(row=2, column=0, padx=20, pady=5, sticky="nw")
 
         self.email_label = customtkinter.CTkLabel(self, text="Email", font=customtkinter.CTkFont(size=15, weight="bold"))
         self.email_label.grid(row=3, column=0, padx=20, pady=5, sticky="nw")
@@ -298,19 +315,17 @@ class CreateAccountTopLevel(customtkinter.CTkToplevel):
         self.login_button.grid(row=7, column=0, padx=20, pady=5, sticky="nw")
 
     def login(self):
-        username = self.username_entry.get()
         email = self.email_entry.get()
         password = self.password_entry.get()
         
         userdict = {
-        "username": username,
         "email": email,
         "password": password
         }
         print(userdict)
         print("add user button clicked")
-        client.add_user(username, email, password)  
-        print(username, email, password)
+        client.add_user(email, password)  
+        print(email, password)
         app.toplevel_window.after(500, self.destroy)
 
 class RequestGameTopLevel(customtkinter.CTkToplevel):
@@ -333,9 +348,9 @@ class RequestGameTopLevel(customtkinter.CTkToplevel):
         self.request_button.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
 
     def request(self):
-        user = username
+        user = email
         game = self.game_entry.get()
-        print(username, game)
+        print(user, game)
         client.game_request(user, game)
         app.toplevel_window.after(500, self.destroy)
 
@@ -473,23 +488,23 @@ class App(customtkinter.CTk):
         else:
             self.toplevel_window.focus()
 
-    def create_account(self):
-        username = customtkinter.CTkInputDialog(text="Enter usernsme", title="Login")
-        text1 = username.get_input()  # waits for input
-        password = customtkinter.CTkInputDialog(text="Enter password", title="Login")
-        text2 = password.get_input() # waits for input
-        # Add code to add username(text1) and password(text2) to a new user in the database
+    # def create_account(self):
+    #     username = customtkinter.CTkInputDialog(text="Enter usernsme", title="Login")
+    #     text1 = username.get_input()  # waits for input
+    #     password = customtkinter.CTkInputDialog(text="Enter password", title="Login")
+    #     text2 = password.get_input() # waits for input
+    #     # Add code to add username(text1) and password(text2) to a new user in the database
 
-    def login(self):
-        username = customtkinter.CTkInputDialog(text="Enter usernsme", title="Login")
-        text = username.get_input()  # waits for input
-        password = customtkinter.CTkInputDialog(text="Enter password", title="Login")
-        text2 = password.get_input() # waits for input
-        if text == "admin" and text2 == "admin":
-            self.top_button2.grid_remove()
-            self.top_button2 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10)
-            self.top_button2.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
-            self.sidebar_frame.login()
+    # def login(self):
+    #     username = customtkinter.CTkInputDialog(text="Enter usernsme", title="Login")
+    #     text = username.get_input()  # waits for input
+    #     password = customtkinter.CTkInputDialog(text="Enter password", title="Login")
+    #     text2 = password.get_input() # waits for input
+    #     if text == "admin" and text2 == "admin":
+    #         self.top_button2.grid_remove()
+    #         self.top_button2 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10)
+    #         self.top_button2.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
+    #         self.sidebar_frame.login()
 
 if __name__ == "__main__":
     app = App()
