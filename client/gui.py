@@ -183,8 +183,27 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
             for i in range(len(gamenamelist)):
                 x = gamenamelist[i]
 
-                button = customtkinter.CTkButton(self, width=200, text=f"{x}", command=lambda x=x: showinfo(x))
-                button.grid(row=i+1, column=0, padx=5, pady=5)
+                #button = customtkinter.CTkButton(self, width=200, text=f"{x}", command=lambda x=x: showinfo(x))
+                #button.grid(row=i+1, column=0, padx=5, pady=5)
+
+                container = customtkinter.CTkFrame(self, height=100) 
+                container.pack(fill="x", expand=True, padx=5, pady=5)
+                
+                title = customtkinter.CTkLabel(container, text=f"{x}", font=customtkinter.CTkFont(size=18, weight="bold"))
+                title.grid(row=0, column=0, padx=10, pady=5, sticky="w")
+
+                info = customtkinter.CTkLabel(container, text=f"X Available", font=customtkinter.CTkFont(size=12))
+                info.grid(row=1, column=0, padx=10, pady=5, sticky="w")
+                
+                spacer = customtkinter.CTkLabel(container, text="")
+                spacer.grid(row=0, column=1, padx=5, pady=5, sticky="e")
+
+                info_button = customtkinter.CTkButton(container, text="Details", command=lambda x=x: showinfo(x))
+                info_button.grid(row=0, column=2, padx=5, pady=5, sticky="e")
+
+                request_button = customtkinter.CTkButton(container, text="Request", command=lambda x=x: print("Request the game"))
+                request_button.grid(row=0, column=3, padx=5, pady=5, sticky="e")
+            
 
             def showinfo(x):
                 app.textbox.delete("1.0", "end")
@@ -245,6 +264,8 @@ class LoginTopLevel(customtkinter.CTkToplevel):
             app.toplevel_window.after(500, self.destroy)
             app.sidebar_frame.login_remove()
             app.sidebar_frame.functions_show()
+            
+            
         else:
             messagebox.showinfo("Error", "Invaild Username or Password")
             
@@ -320,7 +341,7 @@ class App(customtkinter.CTk):
         self.textbox = customtkinter.CTkTextbox(self, width=100)                                                                            #Call Textbox
         self.textbox.grid(row=0, column=2, padx=20, pady=(40,70), sticky="nsew", rowspan=3, columnspan=2)
         self.textbox.insert("end", "Welcome to Board Game Borrow!")
-        self.textbox.configure(state="disabled")  # Make the textbox read-only
+        #self.textbox.configure(state="disabled")  # Make the textbox read-only
 
         self.exit = customtkinter.CTkButton(self, text="Exit", command=self.quit)                                                           #Exit Button
         self.exit.grid(row=2, column=3, padx=20, pady=20, sticky="es")
