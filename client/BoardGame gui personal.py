@@ -3,6 +3,7 @@ import tkinter.messagebox
 import json
 import customtkinter
 import BoardGame_Client_Personal as client
+import client_auth as auth
 
 
 class SidebarFrame(customtkinter.CTkFrame):
@@ -281,6 +282,8 @@ class LoginTopLevel(customtkinter.CTkToplevel):
         password = self.password_entry.get()
         print(email, password)
         client.check_user(email, password)
+
+        auth.save_user(email, password)
         
         app.sidebar_frame.login_remove()
         app.sidebar_frame.functions_show()
@@ -413,6 +416,15 @@ class App(customtkinter.CTk):
 
         # button3 = customtkinter.CTkButton(self, text="Remove Frame", command=lambda: self.remove_frame())
         # button3.grid(row=2, column=2, padx=20, pady=20, sticky="es")
+
+        user = auth.load_user()
+        if user:
+            client.check_user(auth.get_email(), auth.get_password())
+            SidebarFrame.login()
+
+        
+
+
 
     def switch_frame(self, frame):
         # param frame: instance of customtkinter.CTkFrame
