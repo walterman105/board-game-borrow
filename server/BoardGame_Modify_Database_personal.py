@@ -41,17 +41,13 @@ class Database:
             database = "my_database"
         )
         cursor = conn.cursor()
+        
         #Add data function:
         #Add data to table/columns
         insert_query = """
-            INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount)
-            VALUES (%s, %s, %s, %s, %s, %s);
+            INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, owner)
+            VALUES (%s, %s, %s, %s, %s, %s, %s);
         """
-        # name = input("Enter the name of the game: ").upper()
-        # minPlayerCount = int(input("Enter the minimum player count: "))
-        # maxPlayerCount = int(input("Enter the maximum player count: "))
-        # time = int(input("Enter the amount of minutes the game usually takes: "))
-        # age = int(input("Enter the minimum recommended age to play the game: "))
 
         cursor.execute(insert_query, data)
 
@@ -59,36 +55,43 @@ class Database:
         cursor.close()
         conn.close()
 
-        
-        # print("1. Add Game")
-        # print("2. Display Database")
-        # choice = input("Enter your choice: ")
+    def adduser(self, data):
+        conn = mysql.connector.connect(
+            host = "localhost",
+            user = "root",
+            password = "wugsob-Poxger-duvna8",
+            database = "my_database"
+        )
+        cursor = conn.cursor()
+        #Add data function:
+        #Add data to table/columns
 
-        # if choice == "1":
-        #     add_game()
+        insert_query = """
+            INSERT INTO users (Username, Email, Password, UserID)
+            VALUES (%s, %s, %s, %s);
+        """
 
-        # elif choice == "2":
-        #     show_games()
+        cursor.execute(insert_query, data)
 
-        # conn.commit()
-        # cursor.close()
-        # conn.close()
-        # #print("Data inserted successfully")
+        conn.commit()
+        cursor.close()
+        conn.close()
 
-# while True:
-#     print("1. Add Game")
-#     print("2. Display Database")
-#     choice = input("Enter your choice: ")
+    def checkusers(self):
+        conn = mysql.connector.connect(
+            host = "localhost",
+            user = "root",
+            password = "wugsob-Poxger-duvna8",
+            database = "my_database"
+        )
+        cursor = conn.cursor()
 
-#     if choice == "1":
-#         Database.add_game("Catan", 3, 4, 60, 10)
+        Users = "SELECT Username FROM users"
 
-#     elif choice == "2":
-#         Database.show_games()
+        cursor.execute(Users)
+        rows = cursor.fetchall()
 
-#     else:
-#         print("Invalid choice")
-#         break
+#         print(rows)
 
-
-
+# d = Database()
+# d.checkusers()

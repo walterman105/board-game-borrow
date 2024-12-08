@@ -66,11 +66,12 @@ class FunctionsSidebarFrame(customtkinter.CTkFrame):
     def addGame(self):
         print("Add Game")
         app.open_toplevel()
-        app.toplevel_window.focus() 
+        app.toplevel_window.after(50, app.toplevel_window.lift) 
 
     def requestGame(self):
         print("Request Game")
-        app.switch_frame(app.login_frame)
+        app.open_toplevel_reqest()
+        app.toplevel_window.after(50, app.toplevel_window.lift) 
 
 class AddGame(customtkinter.CTkToplevel):
     def __init__(self, master):
@@ -136,12 +137,14 @@ class AddGame(customtkinter.CTkToplevel):
         "age": age,
         "minplayercount": minplayercount,
         "maxplayercount": maxplayercount,
-        "gametime": gametime
+        "gametime": gametime,
+        "owner": username
         }
         print(gamedict)
         print("add game button clicked")
-        client.add_game(name, minplayercount, maxplayercount, gametime, age)  
-        print(name, age, minplayercount, maxplayercount, gametime)
+        client.add_game(name, minplayercount, maxplayercount, gametime, age, username)  
+        print(name, age, minplayercount, maxplayercount, gametime, username)
+        app.toplevel_window.after(500, self.destroy)
         
 
 
@@ -252,10 +255,14 @@ class LoginTopLevel(customtkinter.CTkToplevel):
         self.login_button.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
 
     def login(self):
+        global username
         username = self.username_entry.get()
         password = self.password_entry.get()
         print(username, password)
-        app.toplevel_window.after(500, self.destroy)
+        app.sidebar_frame.login_remove()
+        app.sidebar_frame.functions_show()
+        app.master.login
+        app.toplevel_window.after(50, self.destroy)
 
 
 
@@ -294,10 +301,43 @@ class CreateAccountTopLevel(customtkinter.CTkToplevel):
         username = self.username_entry.get()
         email = self.email_entry.get()
         password = self.password_entry.get()
+        
+        userdict = {
+        "username": username,
+        "email": email,
+        "password": password
+        }
+        print(userdict)
+        print("add user button clicked")
+        client.add_user(username, email, password)  
         print(username, email, password)
         app.toplevel_window.after(500, self.destroy)
 
+class RequestGameTopLevel(customtkinter.CTkToplevel):
+    def __init__(self, master):
+        super().__init__(master)
 
+        self.title("Request Game")
+        self.geometry(f"{400}x{400}")
+
+        self.label = customtkinter.CTkLabel(self, text="Request Game", fg_color="#1d1e1e", corner_radius=30, font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.label.grid(row=0, column=0, padx=20, pady=(20,5), sticky="nw")
+
+        self.game_label = customtkinter.CTkLabel(self, text="Game", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.game_label.grid(row=3, column=0, padx=20, pady=5, sticky="nw")
+
+        self.game_entry = customtkinter.CTkEntry(self, width=200)
+        self.game_entry.grid(row=4, column=0, padx=20, pady=5, sticky="nw")
+
+        self.request_button = customtkinter.CTkButton(self, text="Request", command=self.request)
+        self.request_button.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
+
+    def request(self):
+        user = username
+        game = self.game_entry.get()
+        print(username, game)
+        client.game_request(user, game)
+        app.toplevel_window.after(500, self.destroy)
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -321,11 +361,15 @@ class App(customtkinter.CTk):
         self.top_button2 = customtkinter.CTkButton(self, text="Sign In", width=15, height=10, command=self.open_toplevel_login)                                                 #Top Button
         self.top_button2.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
 
+        self.top_button3 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10)                                                 #Top Button
+        self.top_button3.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
+        self.top_button3.grid_remove()
+
         self.checkbox = customtkinter.CTkCheckBox(self, text="Sidebar", command=self.sidebar)                                               #Call Checkbox
         self.checkbox.grid(row=2, column=1, padx=20, pady=20, sticky="ws")
         self.checkbox.select()
 
-        self.textbox = customtkinter.CTkTextbox(self, width=100)                                                                            #Call Textbox
+        self.textbox = customtkinter.CTkTextbox(self, width=300)                                                                            #Call Textbox
         self.textbox.grid(row=0, column=2, padx=20, pady=(40,70), sticky="nsew", rowspan=3, columnspan=2)
         self.textbox.insert("end", "Welcome to Board Game Borrow\n\n")
 
@@ -333,7 +377,6 @@ class App(customtkinter.CTk):
         self.exit.grid(row=2, column=3, padx=20, pady=20, sticky="es")
 
         self.current_frame = None
-
 
         # create objects:
         # <__main__.GeneralFrame object .!generalframe>
@@ -347,14 +390,14 @@ class App(customtkinter.CTk):
         self.gamelist.grid_remove() # hide parent .!ctkframe
         # print(self.scroll_frame.master.master) # .!ctkframe
 
-        button1 = customtkinter.CTkButton(self, text="Switch to Scroll Frame", command=lambda: self.switch_frame(self.gamelist))
-        button1.grid(row=2, column=1, padx=20, pady=20, sticky="es")
+        # button1 = customtkinter.CTkButton(self, text="Switch to Scroll Frame", command=lambda: self.switch_frame(self.gamelist))
+        # button1.grid(row=2, column=1, padx=20, pady=20, sticky="es")
 
-        button2 = customtkinter.CTkButton(self, text="Switch to Login Frame", command=lambda: self.switch_frame(self.login_frame))
-        button2.grid(row=2, column=1, padx=180, pady=20, sticky="es")
+        # button2 = customtkinter.CTkButton(self, text="Switch to Login Frame", command=lambda: self.switch_frame(self.login_frame))
+        # button2.grid(row=2, column=1, padx=180, pady=20, sticky="es")
 
-        button3 = customtkinter.CTkButton(self, text="Remove Frame", command=lambda: self.remove_frame())
-        button3.grid(row=2, column=2, padx=20, pady=20, sticky="es")
+        # button3 = customtkinter.CTkButton(self, text="Remove Frame", command=lambda: self.remove_frame())
+        # button3.grid(row=2, column=2, padx=20, pady=20, sticky="es")
 
     def switch_frame(self, frame):
         # param frame: instance of customtkinter.CTkFrame
@@ -390,21 +433,43 @@ class App(customtkinter.CTk):
     def show_sidebar(self):
         self.sidebar_frame.grid()
 
+    def sign_out_remove(self):
+        self.top_button3.grid_remove()
+
+    def sign_out_show(self):
+        self.top_button3.grid()
+
+    def sign_in_remove(self):
+        self.top_button2.grid_remove()
+
+    def sign_in_show(self):
+        self.top_button2.grid()
+
     def open_toplevel(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
             self.toplevel_window = AddGame(self)  # create window if its None or destroyed
+            self.toplevel_window.after(50, app.toplevel_window.lift) 
         else:
             self.toplevel_window.focus()  # if window exists focus it
     
     def open_toplevel_login(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
             self.toplevel_window = LoginTopLevel(self)  # create window if its None or destroyed
+            self.toplevel_window.after(50, app.toplevel_window.lift) 
         else:
             self.toplevel_window.focus()  # if window exists focus it
 
     def open_toplevel_create_account(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
             self.toplevel_window = CreateAccountTopLevel(self)
+            self.toplevel_window.after(50, app.toplevel_window.lift) 
+        else:
+            self.toplevel_window.focus()
+
+    def open_toplevel_reqest(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = RequestGameTopLevel(self)
+            self.toplevel_window.after(50, app.toplevel_window.lift) 
         else:
             self.toplevel_window.focus()
 

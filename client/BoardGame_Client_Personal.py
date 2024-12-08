@@ -12,8 +12,8 @@ def get_game_info(name):
     response = requests.get(f"{serverUrl}/info/{name}")
     return response.text
 
-def add_game(name, minplayer, maxplayer, gametime, age):
-    new_game = (name, minplayer, maxplayer, gametime, age, 1)
+def add_game(name, minplayer, maxplayer, gametime, age, owner):
+    new_game = (name, minplayer, maxplayer, gametime, age, 1, owner)
     print(new_game)
 
     response = requests.post(f"{serverUrl}/add", json=new_game)
@@ -21,6 +21,31 @@ def add_game(name, minplayer, maxplayer, gametime, age):
         print("Game added successfully")
     else:
         print("Failed to add game")
+
+def add_user(username, email, password):
+    new_user = (username, email, password, 1)
+    print(new_user)
+
+    response = requests.post(f"{serverUrl}/adduser", json=new_user)
+    if response.status_code == 201:
+        print("User added successfully")
+    else:
+        print("Failed to add user")
+
+def game_request(username, game):
+    user = (username)
+    print(user)
+
+    response = requests.post(f"{serverUrl}/email/request", json=user)
+    if response.status_code == 201:
+        print("Request sent successfully")
+    else:
+        print("Failed to send request")
+
+
+def check_user(username):
+    response = requests.get(f"{serverUrl}/checkuser/{username}")
+    return response.text
 
 
 def check_connection():
