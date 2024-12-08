@@ -170,6 +170,7 @@ class deleteGame(customtkinter.CTkToplevel):
         print(name)
         client.deletegame(email, name)
         app.toplevel_window.after(50, self.destroy)
+
 class LoginSidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master, width=120, corner_radius=8)
@@ -349,7 +350,7 @@ class RequestGameTopLevel(customtkinter.CTkToplevel):
 
     def request(self):
         user = email
-        game = self.game_entry.get()
+        game = self.game_entry.get().upper()
         print(user, game)
         client.game_request(user, game)
         app.toplevel_window.after(500, self.destroy)

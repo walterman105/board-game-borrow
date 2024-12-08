@@ -53,10 +53,10 @@ def deletegame(email, name):
         print("Failed to delete game")
 
 def game_request(username, game):
-    user = (username)
-    print(user)
+    data = (username, game)
+    print(data)
 
-    response = requests.post(f"{serverUrl}/email/request", json=user)
+    response = requests.post(f"{serverUrl}/email_request", json=data)
     if response.status_code == 201:
         print("Request sent successfully")
     else:

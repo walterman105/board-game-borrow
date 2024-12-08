@@ -6,6 +6,8 @@ import imaplib      #for receiving mail
 
 from email.message import EmailMessage      #for sending mail
 
+import mysql.connector
+
 
 class Email:
     def __init__(self):
@@ -13,20 +15,42 @@ class Email:
         email_id='board.game.borrow.app@gmail.com'
         email_pass='tgxc reor gudt bhhr'
 
-    def send_request(data):
+    def send_request(self, data):
 
         email_id='board.game.borrow.app@gmail.com'
         email_pass='tgxc reor gudt bhhr'
 
-        user = data
-        
-        recipiants = "lexrichter@gmail.com"       #Email id of the recipiant
+        user = data[0]
+        print(user)
+        game_name = data[1]
+        print(game_name)
 
-        to = [f"{recipiants}"]          
+        conn = mysql.connector.connect(
+            host = "localhost",
+            user = "root",
+            password = "wugsob-Poxger-duvna8",
+            database = "my_database"
+        )
+        cursor = conn.cursor()
+
+        game = "SELECT owner FROM boardgames WHERE name = %s;" #selects all rows where the value user in boardgames is placeholder
+        cursor.execute(game, (game_name,))
+
+        results = cursor.fetchall()
+        
+        results = ', '.join([row[0] for row in results])
+        print(results)
+        
+        # recipiants = "lexrichter@gmail.com"       #Email id of the recipiant
+
+        to = [f"{results}"]          
+        print(to)
 
         sub = "BOARDGAMEBORROW Game request"       #Subject of the mail
+        print(sub)
 
         a = f"{user} has requested to borrow a game from you. Please login to the BOARDGAMEBORROW app to accept or reject the request."       #Body of the mail
+        print(a)
 
         for i in to:
             
@@ -39,6 +63,7 @@ class Email:
         with smtplib.SMTP_SSL('smtp.gmail.com',465)as smtp:
                 smtp.login(email_id,email_pass)
                 smtp.send_message(msg)
+                print("Mail sent successfully")
                 smtp.quit()
 
     def receive_email():
@@ -81,7 +106,7 @@ class Email:
     #     choice = int(input("Enter your choice: "))
 
     #     if choice == 1:
-    #         send_email()
+    #         send_request()
     #     elif choice == 2:
     #         receive_email()
     #     elif choice == 3:
