@@ -1,8 +1,9 @@
 import tkinter
-import tkinter.messagebox
+from tkinter import messagebox
 import json
 import customtkinter
 import client
+import globals as g
 
 class SidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -171,7 +172,7 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
 
         self.columnconfigure(0, weight=1)
 
-        if client.conneted_to_server == False:
+        if g.conneted_to_server == False:
             label = customtkinter.CTkLabel(self, text="Could not connect to server", font=customtkinter.CTkFont(size=15, weight="bold"))
             label.grid(row=0, column=0, padx=20, pady=20)
         else:
@@ -237,7 +238,17 @@ class LoginTopLevel(customtkinter.CTkToplevel):
         username = self.username_entry.get()
         password = self.password_entry.get()
         print(username, password)
-        app.toplevel_window.after(500, self.destroy)
+
+        client.send_credentials(username, password)
+
+        if g.user_logged_in:
+            app.toplevel_window.after(500, self.destroy)
+            app.sidebar_frame.login_remove()
+            app.sidebar_frame.functions_show()
+        else:
+            messagebox.showinfo("Error", "Invaild Username or Password")
+            
+
 
 
 
@@ -308,7 +319,8 @@ class App(customtkinter.CTk):
 
         self.textbox = customtkinter.CTkTextbox(self, width=100)                                                                            #Call Textbox
         self.textbox.grid(row=0, column=2, padx=20, pady=(40,70), sticky="nsew", rowspan=3, columnspan=2)
-        self.textbox.insert("end", "Welcome to Board Game Borrow\n\n")
+        self.textbox.insert("end", "Welcome to Board Game Borrow!")
+        self.textbox.configure(state="disabled")  # Make the textbox read-only
 
         self.exit = customtkinter.CTkButton(self, text="Exit", command=self.quit)                                                           #Exit Button
         self.exit.grid(row=2, column=3, padx=20, pady=20, sticky="es")
@@ -399,14 +411,15 @@ class App(customtkinter.CTk):
 
     def login(self):
         username = customtkinter.CTkInputDialog(text="Enter usernsme", title="Login")
-        text = username.get_input()  # waits for input
+        username_input = username.get_input()  # waits for input
         password = customtkinter.CTkInputDialog(text="Enter password", title="Login")
-        text2 = password.get_input() # waits for input
-        if text == "admin" and text2 == "admin":
-            self.top_button2.grid_remove()
-            self.top_button2 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10)
-            self.top_button2.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
-            self.sidebar_frame.login()
+        username_password = password.get_input() # waits for input
+
+        # if username_input == "admin" and username_password == "admin":
+        #     self.top_button2.grid_remove()
+        #     self.top_button2 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10)
+        #     self.top_button2.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
+        #     self.sidebar_frame.login()
 
 
 if __name__ == "__main__":

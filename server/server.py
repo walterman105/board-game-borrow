@@ -1,12 +1,13 @@
+from time import sleep
 from flask import Flask, request, jsonify
 from database import Database
-# from auth import Authentication
+from auth import Authentication
 
 class Server:
     def __init__(self):
         self.server = Flask("BoardGameServer")
         self.db = Database()
-        # self.auth = Authentication(self.server)
+        self.auth = Authentication()
 
         self.setup()
 
@@ -38,7 +39,7 @@ class Server:
         # Authentication routes
         @self.server.route("/login", methods=["POST"])
         def login():
-            return self.auth.login(request.json)
+            return self.user_login(request.json)
             
     def display_games(self):
         #return jsonify(self.db.boardGames)
@@ -68,6 +69,13 @@ class Server:
     
     def run(self):
         self.server.run(debug=True)
+
+    def user_login(self, data):
+        success = self.auth.login(data)
+        if success:
+            return jsonify({"message": "Login successful"}), 200
+        else:
+            return jsonify({"message": "Login failed"}), 401
     
 
 if __name__ == "__main__":

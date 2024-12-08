@@ -1,9 +1,10 @@
 import requests
 import gui
+import globals as g
 
 serverUrl = "http://127.0.0.1:5000"
 
-conneted_to_server = False
+
 
 def get_game_list(): 
     response = requests.get(f"{serverUrl}/boardgames")
@@ -22,19 +23,29 @@ def add_game(name, maxplayer, gametime, age):
     else:
         print("Failed to add game")
 
+def send_credentials(username, password):
+    credentials = {"username": username, "password": password}
+    response = requests.post(f"{serverUrl}/login", json=credentials)
+    if response.status_code == 200:
+        print("Login successful")
+        g.user_logged_in = True
+    else:
+        print("Login failed")
+        g.user_logged_in = False
+
 
 def check_connection():
-    global conneted_to_server
+    #global conneted_to_server
 
     try:
         response = requests.get(serverUrl)
         if response.status_code == 200:
             response_json = response.json()
             if response_json.get("status") == "ok":
-                conneted_to_server = True
+                g.conneted_to_server = True
             else:
-                conneted_to_server = False
+                g.conneted_to_server = False
         else:
-            conneted_to_server = False
+            g.conneted_to_server = False
     except requests.RequestException:
-        conneted_to_server = False
+        g.conneted_to_server = False
