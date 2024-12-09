@@ -1,10 +1,11 @@
 import tkinter
-import tkinter.messagebox
+from tkinter import messagebox
 import json
 import customtkinter
 import BoardGame_Client_Personal as client
 import client_auth as auth
-
+from client_auth import sign_out
+import gloabls as g
 
 class SidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -20,9 +21,6 @@ class SidebarFrame(customtkinter.CTkFrame):
 
         self.loginframe = LoginSidebarFrame(self)                                                                                         #Call Login Frame
         self.loginframe.grid(row=1, column=0, padx=10, pady=10)
-
-        self.sidebar_button_1 = customtkinter.CTkButton(self, text="Login", command=self.login)
-        self.sidebar_button_1.grid(row=2, column=0, padx=10, pady=10)
 
     def login_remove(self):
         self.loginframe.grid_remove()
@@ -147,12 +145,12 @@ class AddGame(customtkinter.CTkToplevel):
         "minplayercount": minplayercount,
         "maxplayercount": maxplayercount,
         "gametime": gametime,
-        "owner": email
+        "owner": g.email
         }
         print(gamedict)
         print("add game button clicked")
-        client.add_game(name, minplayercount, maxplayercount, gametime, age, email)  
-        print(name, age, minplayercount, maxplayercount, gametime, email)
+        client.add_game(name, minplayercount, maxplayercount, gametime, age, g.email)  
+        print(name, age, minplayercount, maxplayercount, gametime, g.email)
         app.toplevel_window.after(500, self.destroy)
         
 class deleteGame(customtkinter.CTkToplevel):
@@ -175,9 +173,9 @@ class deleteGame(customtkinter.CTkToplevel):
         self.delete_button.grid(row=3, column=0, padx=20, pady=5, sticky="nw")
 
     def delete(self):
-        name = self.game_entry.get()
+        name = self.game_entry.get().upper()
         print(name)
-        client.deletegame(email, name)
+        client.deletegame(g.email, name)
         app.toplevel_window.after(50, self.destroy)
 
 class LoginSidebarFrame(customtkinter.CTkFrame):
@@ -286,22 +284,22 @@ class LoginTopLevel(customtkinter.CTkToplevel):
         self.login_button.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
 
     def login(self):
-        global email
-        email = self.email_entry.get()
+        g.email = self.email_entry.get()
         password = self.password_entry.get()
-        print(email, password)
-        client.check_user(email, password)
+        print(g.email, password)
+        client.check_user(g.email, password)
+        if g.user_logged_in:
+            app.toplevel_window.after(50, self.destroy)
+            app.sidebar_frame.login_remove()
+            app.sidebar_frame.functions_show()
 
-        auth.save_user(email, password)
+            auth.save_user(g.email, password)
         
-        app.sidebar_frame.login_remove()
-        app.sidebar_frame.functions_show()
-        app.sign_in_remove()
-        app.sign_out_show()
-
-        app.toplevel_window.after(50, self.destroy)
-
-
+            app.sign_in_remove()
+            app.sign_out_show()
+          
+        else:
+            messagebox.showinfo("Error", "Invaild Username or Password")
 
 class CreateAccountTopLevel(customtkinter.CTkToplevel):
     def __init__(self, master):
@@ -362,7 +360,7 @@ class RequestGameTopLevel(customtkinter.CTkToplevel):
         self.request_button.grid(row=5, column=0, padx=20, pady=5, sticky="nw")
 
     def request(self):
-        user = email
+        user = g.email
         game = self.game_entry.get().upper()
         print(user, game)
         client.game_request(user, game)
@@ -385,12 +383,12 @@ class App(customtkinter.CTk):
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
         self.top_button1 = customtkinter.CTkButton(self, text="Create Account", width=15, height=10, command=self.open_toplevel_create_account)                                                              #Top Button
-        self.top_button1.grid(row=0, column=3, padx=(20, 80), pady=10, sticky="ne")
+        self.top_button1.grid(row=0, column=3, padx=(20, 95), pady=10, sticky="ne")
 
-        self.top_button2 = customtkinter.CTkButton(self, text="Sign In", width=15, height=10, command=self.open_toplevel_login)                                                 #Top Button
+        self.top_button2 = customtkinter.CTkButton(self, text="Sign In", width=30, height=10, command=self.open_toplevel_login)                                                 #Top Button
         self.top_button2.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
 
-        self.top_button3 = customtkinter.CTkButton(self, text="Sign Out", width=15, height=10)                                                 #Top Button
+        self.top_button3 = customtkinter.CTkButton(self, text="Sign Out", width=30, height=10, command=self.sign_out)                                                 #Top Button
         self.top_button3.grid(row=0, column=3, padx=20, pady=10, sticky="ne")
         self.top_button3.grid_remove()
 
@@ -419,26 +417,13 @@ class App(customtkinter.CTk):
         self.gamelist.grid_remove() # hide parent .!ctkframe
         # print(self.scroll_frame.master.master) # .!ctkframe
 
-        # button1 = customtkinter.CTkButton(self, text="Switch to Scroll Frame", command=lambda: self.switch_frame(self.gamelist))
-        # button1.grid(row=2, column=1, padx=20, pady=20, sticky="es")
-
-        # button2 = customtkinter.CTkButton(self, text="Switch to Login Frame", command=lambda: self.switch_frame(self.login_frame))
-        # button2.grid(row=2, column=1, padx=180, pady=20, sticky="es")
-
-        # button3 = customtkinter.CTkButton(self, text="Remove Frame", command=lambda: self.remove_frame())
-        # button3.grid(row=2, column=2, padx=20, pady=20, sticky="es")
-        global email
-        email = auth.get_email()
-        if email:
+        g.email = auth.get_email()
+        if g.email:
             client.check_user(auth.get_email(), auth.get_password())
             self.sidebar_frame.login_remove()
             self.sidebar_frame.functions_show()
             self.sign_in_remove()
             self.sign_out_show()
-
-        
-
-
 
     def switch_frame(self, frame):
         # param frame: instance of customtkinter.CTkFrame
@@ -479,6 +464,13 @@ class App(customtkinter.CTk):
 
     def sign_out_show(self):
         self.top_button3.grid()
+
+    def sign_out(self):
+        auth.sign_out()
+        self.sidebar_frame.functions_remove()
+        self.sidebar_frame.login_show()
+        self.sign_out_remove()
+        self.sign_in_show()
 
     def sign_in_remove(self):
         self.top_button2.grid_remove()

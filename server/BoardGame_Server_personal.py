@@ -115,8 +115,11 @@ class Server:
         return jsonify({"message": "User added successfully"}), 201
     
     def check_user(self, data):
-        self.db.login(data)
-        return jsonify({"message": "User added successfully"}), 201
+        if self.db.login(data):
+            return jsonify({"message": "User check successful"}), 201
+        else:
+            return jsonify({"message": "User check failed"}), 404
+        #return jsonify({"message": "User check successful"}), 201
     
     def check_game(self, name):
         if name in self.db.boardGames:

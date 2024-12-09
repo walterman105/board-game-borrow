@@ -43,37 +43,36 @@ class Database:
         )
         cursor = conn.cursor()
 
-        username = data[6]
-        boardgame_name = data[0]
-        name_check = "SELECT name FROM boardgames WHERE name = %s;"
-        cursor.execute(name_check, (boardgame_name,))
-        name_check_results = cursor.fetchall()
-        game_name = name_check_results[0][0]
-        print(game_name)
+        # username = data[6]
+        # boardgame_name = data[0]
+        # name_check = "SELECT name FROM boardgames WHERE name = %s;"
+        # cursor.execute(name_check, (boardgame_name,))
+        # name_check_results = cursor.fetchall()
+        # game_name = name_check_results[0][0]
+        # print(game_name)
         
-        if game_name == boardgame_name:
-            new_query = """
-                INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, owner)
-                SELECT name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, %s
-                FROM boardgames WHERE name = %s;
-                """
-            cursor.execute(new_query, (username, boardgame_name))
-            conn.commit()
-            print("Added to database")
-        else:
-
+        # if game_name == boardgame_name:
+        #     new_query = """
+        #         INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, owner)
+        #         SELECT name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, %s
+        #         FROM boardgames WHERE name = %s;
+        #         """
+        #     cursor.execute(new_query, (username, boardgame_name))
+        #     conn.commit()
+        #     print("Added to database")
+        # else:
             #Add data function:
             #Add data to table/columns
-            insert_query = """
-                INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, owner)
-                VALUES (%s, %s, %s, %s, %s, %s, %s);
+        insert_query = """
+            INSERT INTO boardgames (name, minPlayerCount, maxPlayerCount, gametime, age, gamecount, owner)
+            VALUES (%s, %s, %s, %s, %s, %s, %s);
             """
 
-            cursor.execute(insert_query, data)
+        cursor.execute(insert_query, data)
 
-            conn.commit()
-            cursor.close()
-            conn.close()
+        conn.commit()
+        cursor.close()
+        conn.close()
 
     def adduser(self, data):
         conn = mysql.connector.connect(
@@ -125,13 +124,18 @@ class Database:
                     check_password = ''.join(map(str, check_password)) #changes set to string
                     if password == check_password: #if matches, login successful
                         print("Login Successful!")
+                        return True
+                        cursor.close()
+                        conn.close()
                         #modify menu driven program:
                         # Add data function:
                         # Add data to table/columns
+        else:
+            print("Username not found")
+            return False
 
         # conn.commit()
-        cursor.close()
-        conn.close()
+        
 
     def deletegame(self, data):
 

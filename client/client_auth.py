@@ -22,4 +22,6 @@ def get_email():
 def get_password():
     user = load_user()
     return user[1]
-    
+
+def sign_out():
+    save_user("", "")
