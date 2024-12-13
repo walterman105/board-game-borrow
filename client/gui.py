@@ -6,6 +6,7 @@ import client_auth as auth
 from client_auth import sign_out
 import globals as g
 
+
 class SidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master, corner_radius=0)
@@ -84,7 +85,7 @@ class AddGame(customtkinter.CTkToplevel):
         super().__init__(master)
 
         self.title("Add Game")
-        self.geometry(f"{400}x{400}")
+        self.geometry(f"{400}x{600}")
 
         # self.grid_columnconfigure(0, weight=1)
         # self.grid_rowconfigure(0, weight=1)
@@ -227,6 +228,7 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
 
         self.columnconfigure(0, weight=1)
 
+        client.check_connection()
         if not g.conneted_to_server:
             messagebox.showinfo("Error", "Could not connect to server")
         else:
@@ -472,6 +474,8 @@ class App(customtkinter.CTk):
         auth.sign_out()
         self.sidebar_frame.functions_remove()
         self.sidebar_frame.login_show()
+        self.textbox.delete("1.0", "end")
+        self.remove_frame()
         self.sign_out_remove()
         self.sign_in_show()
 

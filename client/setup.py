@@ -12,8 +12,10 @@ build_exe_options = {
     'include_files': include_files,  # Include additional files
 }
 
-# Base for macOS GUI applications
-base = None
+
+if sys.platform == 'win32':
+    base = 'Win32GUI'
+
 
 # Executable configuration
 executables = [

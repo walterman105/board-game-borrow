@@ -11,6 +11,7 @@ def save_user(email, password):
 
 def load_user():
     if not os.path.exists("client/user.dat"):
+        print("User data not found")
         return False
     with open("client/user.dat", "rb") as f:
         return pickle.load(f)
@@ -25,4 +26,3 @@ def get_password():
 
 def sign_out():
     save_user("", "")
-
